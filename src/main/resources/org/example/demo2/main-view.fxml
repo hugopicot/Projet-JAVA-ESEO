@@ -13,7 +13,7 @@
       fx:controller="org.example.demo2.HelloController" stylesheets="@styles.css">
 
     <!-- NavBar-->
-    <HBox id="navbar-wrapper" spacing="200" alignment="CENTER">
+    <HBox id="navbar-wrapper" spacing="400" alignment="CENTER">
         <!--Logo-->
         <padding>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
@@ -53,8 +53,26 @@
 
 
         <!--  Main  -->
-        <VBox>
+        <VBox alignment="TOP_RIGHT">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <!--Make a post-->
+            <VBox spacing="20" alignment="TOP_RIGHT" styleClass="make-post-wrapper">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <TextField promptText="Make a post..." styleClass="make-post-text"/>
+                <Button styleClass="make-post-button">Post</Button>
+            </VBox>
 
+            <!--Post 1-->
+            <VBox></VBox>
+
+            <!--Post 1 Replica-->
+            <VBox></VBox>
+
+            <!--A futur: celle ci son les post auto generes par Java-->
         </VBox>
 
 

@@ -1,11 +1,8 @@
-.button {
-    /*-fx-background-color: red;*/
-}
 
 #navbar-wrapper {
     -fx-background-color: #EAEEF7;
-    -fx-border-color: black;
-    -fx-border-width: 1px;
+    /*-fx-border-color: black;*/
+    /*-fx-border-width: 1px;*/
 }
 
 #logo-wrapper {
@@ -16,28 +13,32 @@
 .button-login {
     -fx-background-color: #5B8DEF;
     -fx-text-fill: white;
-    -fx-border-radius: 20rem;
     -fx-min-width: 100px;
+    -fx-background-radius: 20px;
     -fx-min-height: 40px;
     -fx-font-size: 15px;
 }
 
 .navbar-searchbar {
     -fx-min-width: 300px;
-    -fx-min-height: 30px;
+    -fx-min-height: 50px;
+    -fx-background-radius: 20px;
+
 }
 
 .sidebar-wrapper {
-    -fx-min-height: 320px;
+    -fx-min-height: 620px;
     -fx-background-color: white;
-    -fx-border-color: black;
-    -fx-border-width: 1px;
     -fx-min-width: 200px;
     -fx-max-width: 200px;
 }
 
 .sidebar-item-wrapper {
     -fx-background-color: #D0DDFD;
+    -fx-background-radius: 20px;
+    /*il marche, on doit configurer selon le figma*/
+    /*offsetX: -2, offsetY: -1, blur: 4.9, spread: 2*/
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.1 ), 2, 2, -2, -1 );
 }
 
 .sidebar-item-wrapper .label {
@@ -55,3 +56,42 @@
     -fx-font-size: 20px;
     -fx-font-weight: bold;
 }
+
+
+.make-post-button {
+    -fx-background-color: #5B8DEF;
+    -fx-text-fill: white;
+    -fx-min-width: 100px;
+    -fx-background-radius: 20px;
+    -fx-min-height: 40px;
+    -fx-font-size: 15px;
+}
+
+
+/*Text Field Make a Post*/
+.make-post-text {
+    -fx-min-width: 500px;
+    -fx-min-height: 100px;
+    -fx-background-radius: 10px;
+    /*-fx-effect: dropshadow(gaussian, black, 0, 0, 0, 0);*/
+}
+
+.make-post-wrapper {
+    -fx-background-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-border-color: rgba(0,0,0,0.1);
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 2, 0, 2);
+}
+
+
+
+
+
+
+
+
+
+
+
+
