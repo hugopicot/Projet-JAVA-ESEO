@@ -119,16 +119,40 @@
                 </HBox>
             </VBox>
 
-            <!--Post 1 Replica-->
-            <VBox></VBox>
+<!--            &lt;!&ndash;Post 1 Replica&ndash;&gt;-->
+<!--            <VBox></VBox>-->
 
             <!--A futur: celle ci son les post auto generes par Java-->
         </VBox>
 
 
         <!--  Related Posts  -->
-        <VBox>
+        <VBox styleClass="related-posts-wrapper">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <Label styleClass="related-posts-title">Related Posts</Label>
 
+            <!--Related Post 1, les suivants sont replicas-->
+            <VBox styleClass="related-post-item" spacing="15">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <ImageView pickOnBounds="true" preserveRatio="true">
+                        <Image url="@img/user_svg.png" />
+                    </ImageView>
+                    <Label>User</Label>
+                </HBox>
+                <Label styleClass="related-post-label">Lorem ipsum dolor sit amet amet amet</Label>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ImageView pickOnBounds="true" preserveRatio="true">
+                        <Image url="@img/like_svg.png" />
+                    </ImageView>
+                    <Label styleClass="related-post-item-likes-amount">10</Label>
+                </HBox>
+
+            </VBox>
         </VBox>
     </HBox>
 

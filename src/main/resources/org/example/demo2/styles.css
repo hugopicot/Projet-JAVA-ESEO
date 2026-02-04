@@ -123,3 +123,29 @@
 .buttons-wrapper {
 
 }
+
+
+.related-posts-wrapper {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+}
+
+.related-posts-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.related-post-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.related-post-item {
+    -fx-border-color: black;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+}
+
+.related-post-item-likes-amount {
+    -fx-font-size: 16px;
+}
