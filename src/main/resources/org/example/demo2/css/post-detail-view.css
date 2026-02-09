@@ -1,0 +1,151 @@
+
+#navbar-wrapper {
+    -fx-background-color: #EAEEF7;
+    /*-fx-border-color: black;*/
+    /*-fx-border-width: 1px;*/
+}
+
+#logo-wrapper {
+    width: 300px;
+    height: 300px;
+}
+
+.button-login {
+    -fx-background-color: #5B8DEF;
+    -fx-text-fill: white;
+    -fx-min-width: 100px;
+    -fx-background-radius: 20px;
+    -fx-min-height: 40px;
+    -fx-font-size: 15px;
+}
+
+.navbar-searchbar {
+    -fx-min-width: 300px;
+    -fx-min-height: 50px;
+    -fx-background-radius: 20px;
+
+}
+
+.sidebar-wrapper {
+    -fx-min-height: 620px;
+    -fx-background-color: white;
+    -fx-min-width: 200px;
+    -fx-max-width: 200px;
+}
+
+.sidebar-item-wrapper {
+    -fx-background-color: #D0DDFD;
+    -fx-background-radius: 20px;
+    /*il marche, on doit configurer selon le figma*/
+    /*offsetX: -2, offsetY: -1, blur: 4.9, spread: 2*/
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.1 ), 2, 2, -2, -1 );
+}
+
+.sidebar-item-wrapper .label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6993F9;
+}
+
+.sidebar-item-wrapper-2 {
+    -fx-background-color: white;
+
+}
+.sidebar-item-2 {
+    -fx-text-fill: black;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+
+.make-post-button, .make-post-button-white {
+    -fx-background-color: #5B8DEF;
+    -fx-text-fill: white;
+    -fx-min-width: 100px;
+    -fx-background-radius: 20px;
+    -fx-min-height: 40px;
+    -fx-font-size: 15px;
+}
+
+.make-post-button-white {
+    -fx-background-color: #FFF;
+}
+
+
+/*Text Field Make a Post*/
+.make-post-text {
+    -fx-min-width: 500px;
+    -fx-min-height: 100px;
+    -fx-background-radius: 10px;
+    /*-fx-effect: dropshadow(gaussian, black, 0, 0, 0, 0);*/
+}
+
+.make-post-wrapper {
+    -fx-background-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-border-color: rgba(0,0,0,0.1);
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 2, 0, 2);
+}
+
+.post-item {
+    -fx-max-width: 700px;
+    -fx-min-width: 500px;
+    -fx-wrap-text: true;
+    -fx-background-radius: 10px;
+    -fx-border-width: 1px;
+    -fx-border-color: rgba(0,0,0,0.1);
+    -fx-border-radius: 10px;
+    /*-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 2, 0, 2);*/
+}
+
+.post-item .post-item-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}
+
+.post-item-paragraph {
+    -fx-font-size: 14px;
+    -fx-font-weight: 300;
+    -fx-wrap-text: true;
+}
+
+#comment-button, #like-button {
+    -fx-text-fill: black;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+#like-button {
+    -fx-text-fill: white;
+}
+
+.buttons-wrapper {
+
+}
+
+
+.related-posts-wrapper {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+}
+
+.related-posts-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.related-post-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.related-post-item {
+    -fx-border-color: black;
+    -fx-border-radius: 10px;
+    -fx-border-width: 1px;
+}
+
+.related-post-item-likes-amount {
+    -fx-font-size: 16px;
+}
