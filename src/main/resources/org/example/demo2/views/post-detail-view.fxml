@@ -11,27 +11,10 @@
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.demo2.HelloApplication" stylesheets="@../css/post-detail-view.css">
 
+    <!--Navbar-->
+    <fx:include source="navbar.fxml" />
 
-
-    <!-- NavBar-->
-    <HBox id="navbar-wrapper" spacing="400" alignment="CENTER">
-        <!--Logo-->
-        <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-        </padding>
-        <ImageView pickOnBounds="true" preserveRatio="true">
-            <Image url="@../img/nova_logo_new.png"/>
-        </ImageView>
-
-        <!--Search bar-->
-        <TextField promptText="Search..." styleClass="navbar-searchbar" />
-
-        <!-- Login button-->
-        <Button styleClass="button-login">Login</Button>
-    </HBox>
-
-<!--    Main-->
-
+    <!--Main-->
     <HBox>
         <!-- Sidebar -->
         <VBox styleClass="sidebar-wrapper" alignment="TOP_CENTER" spacing="20">
