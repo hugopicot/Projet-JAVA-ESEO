@@ -73,7 +73,6 @@
                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
                 </padding>
 
-
                 <!--User-->
                 <HBox alignment="CENTER_LEFT" spacing="5">
                     <ImageView pickOnBounds="true" preserveRatio="true">
@@ -82,16 +81,11 @@
                     <Label>User</Label>
                 </HBox>
 
-
-
                 <!--Title-->
                 <Label styleClass="post-item-title">Lorem ipsum dolor sit amet</Label>
 
-
-
                 <!--Paragraph-->
                 <Label styleClass="post-item-paragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id mauris non massa suscipit sagittis. Nam nec semper diam. Nam vel tincidunt ante, quis semper risus. </Label>
-
 
                 <!--Buttons wrapper-->
                 <HBox spacing="20">
