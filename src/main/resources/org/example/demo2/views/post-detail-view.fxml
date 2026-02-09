@@ -46,10 +46,159 @@
             </HBox>
             <HBox styleClass="sidebar-item-wrapper-2" spacing="15" alignment="CENTER">
                 <ImageView pickOnBounds="true" preserveRatio="true">
-                    <Image url="@img/user_svg.png"/>
+                    <Image url="@../img/user_svg.png"/>
                 </ImageView>
                 <Label styleClass="sidebar-item-2">Users</Label>
             </HBox>
+        </VBox>
+
+        <!--  Main Accueil -->
+        <VBox alignment="TOP_RIGHT" spacing="20">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+
+            <!--See Post-->
+            <!--Placeholder jusqu'a implementation avec backend-->
+            <VBox styleClass="post-item" alignment="CENTER_LEFT" spacing="20" >
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+
+
+                <!--User-->
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <ImageView pickOnBounds="true" preserveRatio="true">
+                        <Image url="@../img/user_svg.png" />
+                    </ImageView>
+                    <Label>User</Label>
+                </HBox>
+
+
+
+                <!--Title-->
+                <Label styleClass="post-item-title">Lorem ipsum dolor sit amet</Label>
+
+
+
+                <!--Paragraph-->
+                <Label styleClass="post-item-paragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id mauris non massa suscipit sagittis. Nam nec semper diam. Nam vel tincidunt ante, quis semper risus. </Label>
+
+
+                <!--Buttons wrapper-->
+                <HBox spacing="20">
+                    <HBox>
+                        <Button id="like-button"  styleClass="make-post-button">
+                            <graphic>
+                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@../img/like_white.png" />
+                                </ImageView>
+                            </graphic>
+                            10
+                        </Button>
+                    </HBox>
+                    <HBox>
+                        <Button id="comment-button" styleClass="make-post-button-white">
+                            <graphic>
+                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@../img/comment_svg.png" />
+                                </ImageView>
+                            </graphic>
+                            10
+                        </Button>
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!--Write a Comment-->
+            <VBox spacing="20" alignment="TOP_RIGHT" styleClass="make-post-wrapper">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <TextField promptText="Write a comment..." styleClass="make-post-text"/>
+
+                <!--Buttons wrapper-->
+                <HBox spacing="20">
+                    <HBox>
+                        <Button id="like-button"  styleClass="make-post-button">
+                            <graphic>
+                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@../img/like_white.png" />
+                                </ImageView>
+                            </graphic>
+                            10
+                        </Button>
+                    </HBox>
+                    <HBox>
+                        <Button id="comment-button" styleClass="make-post-button-white">
+                            <graphic>
+                                <ImageView pickOnBounds="true" preserveRatio="true">
+                                    <Image url="@../img/comment_svg.png" />
+                                </ImageView>
+                            </graphic>
+                            10
+                        </Button>
+                    </HBox>
+                </HBox>
+                <Button styleClass="make-post-button">Comment</Button>
+            </VBox>
+
+
+
+            <!--All Comments-->
+            <VBox styleClass="comments-wrapper">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <!--COmment 1, les autres sont replicas-->
+                <VBox>
+                    <!--User-->
+                    <HBox alignment="CENTER_LEFT" spacing="5">
+                        <ImageView pickOnBounds="true" preserveRatio="true">
+                            <Image url="@../img/user_svg.png" />
+                        </ImageView>
+                        <Label>User</Label>
+                    </HBox>
+
+                    <!--Paragraph-->
+                    <Label styleClass="post-item-paragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id mauris non massa suscipit sagittis. Nam nec semper diam. Nam vel tincidunt ante, quis semper risus. </Label>
+
+
+                </VBox>
+            </VBox>
+        </VBox>
+
+
+
+
+
+
+        <!--  Related Posts  -->
+        <VBox styleClass="related-posts-wrapper">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            </padding>
+            <Label styleClass="related-posts-title">Related Posts</Label>
+
+            <!--Related Post 1, les suivants sont replicas-->
+            <VBox styleClass="related-post-item" spacing="15">
+                <padding>
+                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                </padding>
+                <HBox alignment="CENTER_LEFT" spacing="5">
+                    <ImageView pickOnBounds="true" preserveRatio="true">
+                        <Image url="@../img/user_svg.png" />
+                    </ImageView>
+                    <Label>User</Label>
+                </HBox>
+                <Label styleClass="related-post-label">Lorem ipsum dolor sit amet amet amet</Label>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ImageView pickOnBounds="true" preserveRatio="true">
+                        <Image url="@../img/like_svg.png" />
+                    </ImageView>
+                    <Label styleClass="related-post-item-likes-amount">10</Label>
+                </HBox>
+            </VBox>
         </VBox>
     </HBox>
 

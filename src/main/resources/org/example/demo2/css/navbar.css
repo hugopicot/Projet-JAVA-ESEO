@@ -1,0 +1,26 @@
+#navbar-wrapper {
+    -fx-background-color: #EAEEF7;
+    /*-fx-border-color: black;*/
+    /*-fx-border-width: 1px;*/
+}
+
+#logo-wrapper {
+    width: 300px;
+    height: 300px;
+}
+
+.button-login {
+    -fx-background-color: #5B8DEF;
+    -fx-text-fill: white;
+    -fx-min-width: 100px;
+    -fx-background-radius: 20px;
+    -fx-min-height: 40px;
+    -fx-font-size: 15px;
+}
+
+.navbar-searchbar {
+    -fx-min-width: 300px;
+    -fx-min-height: 50px;
+    -fx-background-radius: 20px;
+
+}

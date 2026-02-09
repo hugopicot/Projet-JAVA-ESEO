@@ -86,6 +86,8 @@
     -fx-border-color: rgba(0,0,0,0.1);
     -fx-border-radius: 10px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 2, 0, 2);
+    -fx-max-width: 700px;
+    -fx-min-width: 500px;
 }
 
 .post-item {
@@ -148,4 +150,12 @@
 
 .related-post-item-likes-amount {
     -fx-font-size: 16px;
+}
+
+.comments-wrapper {
+    -fx-border-width: 1px;
+    -fx-border-color: rgba(0,0,0,0.1);
+    -fx-border-radius: 10px;
+    -fx-max-width: 700px;
+    -fx-min-width: 500px;
 }
