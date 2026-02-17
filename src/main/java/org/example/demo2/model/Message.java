@@ -6,7 +6,7 @@ public class Message {
     private  int id_message ;
     private int contenu;
     private LocalDateTime date_envoi ;
-
+    private boolean lu;
     private  int    id_expediteur;
    private int id_destinataire;
    public  Message(int id_message,int contenu,LocalDateTime date_envoi,int id_expediteur,int id_destinataire){

@@ -9,7 +9,7 @@ public class Commentaire {
   private int score;
   private  int id_utilisateur;
   private   int id_post;
-  private  int   id_parent;
+  private  int  id_parent;
   public Commentaire(String contenu, int id_commentaire,LocalDateTime date_creation,int score ,int id_utilisateur, int id_post,int id_parent){
       this.contenu=contenu;
       this.id_commentaire=id_commentaire;
