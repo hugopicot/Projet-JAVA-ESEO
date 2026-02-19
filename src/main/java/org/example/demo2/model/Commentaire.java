@@ -19,5 +19,11 @@ public class Commentaire {
       this.id_post=id_post;
       this.id_parent=id_parent;
   }
-
+    public String getContenu() { return contenu; }
+    public int getId_commentaire() { return id_commentaire; }
+    public LocalDateTime getDate_creation() { return date_creation; }
+    public int getScore() { return score; }
+    public int getId_utilisateur() { return id_utilisateur; }
+    public int getId_post() { return id_post; }
+    public int getId_parent() { return id_parent; }
 }
