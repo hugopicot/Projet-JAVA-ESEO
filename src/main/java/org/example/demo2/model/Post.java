@@ -19,4 +19,25 @@ public class Post {
         this.id_utilisateur=id_utilisateur;
         this.id_subreddit=id_subreddit;
     }
+    public int getId_post(){
+        return id_post;
+    }
+    public String getTitre(){
+        return titre;
+    }
+    public String getContenu(){
+        return contenu;
+    }
+    public LocalDateTime getDate_creation(){
+        return date_creation;
+    }
+    public int getScore(){
+        return score;
+    }
+    public int getId_utilisateur(){
+        return String.valueOf(id_utilisateur);
+    }
+    public int getId_subreddit(){
+        return id_subreddit;
+    }
 }

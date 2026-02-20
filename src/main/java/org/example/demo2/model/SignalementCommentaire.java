@@ -9,4 +9,13 @@ public class SignalementCommentaire {
         this.id_utilisateur=id_utilisateur;
         this.id_commentaire=id_commentaire;
     }
+    public int getId_signalement_com(){
+        return id_signalement_com;
+    }
+    public int getId_commentaire(){
+        return id_commentaire;
+    }
+    public int getId_utilisateur(){
+        return id_utilisateur;
+    }
 }
