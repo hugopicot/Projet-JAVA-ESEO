@@ -21,12 +21,10 @@ public class NavBarController {
         Image novaLogoImage = new Image(image);
         novaLogo.setImage(novaLogoImage);
 
-
         // Search bar
         TextField searchBar = new TextField();
         searchBar.setPromptText("Search...");
         searchBar.getStyleClass().add("navbar-searchbar");
-
 
         // Login button
         Button loginButton = new Button("Login");

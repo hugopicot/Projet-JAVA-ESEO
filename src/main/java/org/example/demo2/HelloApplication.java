@@ -6,8 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.example.demo2.controller.AccueilController;
 import org.example.demo2.controller.NavBarController;
-import org.example.demo2.controller.PostGeneratorController;
 import org.example.demo2.dao.PostDao;
 import org.example.demo2.model.Post;
 import java.io.IOException;
@@ -21,22 +21,21 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException, SQLException {
         VBox mainScene = new VBox();
         NavBarController navBarController = new NavBarController();
-        PostGeneratorController postGeneratorController = new PostGeneratorController();
+        AccueilController accueilController = new AccueilController();
 
 
         String navbarLogoImage = HelloApplication.class.getResource("img/nova_logo_new.png").toExternalForm();
         List<Post> allPosts = PostDao.getAll();
-
+        String css = HelloApplication.class.getResource("styles.css").toExternalForm();
 
         HBox navbar = navBarController.generateNavbar(navbarLogoImage);
-        VBox posts = postGeneratorController.generateAllPosts(allPosts);
+        VBox accueil = accueilController.generateAccueil(allPosts);
 
-
-        mainScene.getChildren().addAll(navbar, posts);
+        mainScene.getChildren().addAll(navbar, accueil);
 
 
         Scene scene = new Scene(mainScene, 1440, 720);
-        scene.getStylesheets().add(HelloApplication.class.getResource("styles.css").toExternalForm());
+        scene.getStylesheets().add(css);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
