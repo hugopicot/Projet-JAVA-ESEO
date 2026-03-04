@@ -19,13 +19,13 @@ public class Utilisateur {
         this.mot_de_passe = mot_de_passe;
         this.karma = karma;
     }
-    public int getId() { return id; }
+    public int getId() { return id_utilisateur; }
     public String getPseudo() { return pseudo; }
     public String getEmail() { return email; }
-    public String getMotDePasse() { return motDePasse; }
-    public Timestamp getDateInscription() { return dateInscription; }
+    public String getMotDePasse() { return mot_de_passe; }
+    public LocalDateTime getDateInscription() { return date_inscription; }
     public int getKarma() { return karma; }
 
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) { this.id_utilisateur = id; }
 
 }

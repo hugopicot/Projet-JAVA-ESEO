@@ -1,5 +1,7 @@
 package org.example.demo2.dao;
-import model.Utilisateur;
+
+
+import org.example.demo2.model.Utilisateur;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -156,31 +158,33 @@ public class UtilisateurDAO {
 
         return null;
     }
-}
 
-public Utilisateur getUtilisateurByEmail(String email) {
-    String sql = "SELECT * FROM utilisateur WHERE email = ?";
 
-    try (Connection conn = getConnection();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public Utilisateur getUtilisateurByEmail(String email) {
+        String sql = "SELECT * FROM utilisateur WHERE email = ?";
 
-        stmt.setString(1, email);
-        ResultSet rs = stmt.executeQuery();
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        if (rs.next()) {
-            return new Utilisateur(
-                    rs.getInt("id_utilisateur"),
-                    rs.getString("pseudo"),
-                    rs.getString("email"),
-                    rs.getString("mot_de_passe"),
-                    rs.getTimestamp("date_inscription"),
-                    rs.getInt("karma")
-            );
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Utilisateur(
+                        rs.getInt("id_utilisateur"),
+                        rs.getString("pseudo"),
+                        rs.getString("email"),
+                        rs.getString("mot_de_passe"),
+                        rs.getTimestamp("date_inscription"),
+                        rs.getInt("karma")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return null;
     }
-
-    return null;
 }
+
