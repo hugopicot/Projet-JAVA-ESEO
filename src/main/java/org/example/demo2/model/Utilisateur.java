@@ -1,6 +1,8 @@
 package org.example.demo2.model;
 
+
 import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 public class Utilisateur {
     private int id_utilisateur;
@@ -17,5 +19,13 @@ public class Utilisateur {
         this.mot_de_passe = mot_de_passe;
         this.karma = karma;
     }
+    public int getId() { return id; }
+    public String getPseudo() { return pseudo; }
+    public String getEmail() { return email; }
+    public String getMotDePasse() { return motDePasse; }
+    public Timestamp getDateInscription() { return dateInscription; }
+    public int getKarma() { return karma; }
+
+    public void setId(int id) { this.id = id; }
 
 }
