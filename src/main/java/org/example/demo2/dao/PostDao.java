@@ -4,16 +4,17 @@ package org.example.demo2.dao;
  * Data Access Object pour les posts.
  */
 
-
-
 import org.example.demo2.model.Post;
 import org.example.demo2.util.DatabaseConnection;
 import java.sql.*;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.*;
+
+
 public class PostDao {
-    public List<Post>getAll() throws  SQLException {
+
+    public static List<Post>getAll() throws  SQLException {
         List<Post> post = new ArrayList<Post>();
         String sql = "SELECT * FROM Post";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -35,6 +36,8 @@ public class PostDao {
         }
         return  post;
     }
+
+
     public Post findByid(int id){
         Post post = null;
         String sql = "SELECT * FROM Post WHERE id_post = ?";

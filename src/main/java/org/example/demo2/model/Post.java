@@ -21,10 +21,6 @@ public class Post {
         this.id_subreddit = id_subreddit;
     }
 
-//    TO DELETE TO AVOID MERGE ISSUES. JUST TESTING
-    public int getId_post() {
-        return id_post;
-    }
     public int getId_post(){
         return id_post;
     }
@@ -41,7 +37,7 @@ public class Post {
         return score;
     }
     public int getId_utilisateur(){
-        return String.valueOf(id_utilisateur);
+        return (id_utilisateur);
     }
     public int getId_subreddit(){
         return id_subreddit;
