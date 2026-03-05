@@ -17,5 +17,26 @@ public class Vote {
        this.id_post=id_post;
        this.id_commentaire=id_commentaire;
    }
+  public int getId_vote(){
+       return id_vote;
+  }
+  public int getType_vote(){
+       return type_vote;
 
+  }
+
+    public LocalDateTime getDate_vote() {
+        return date_vote;
+    }
+    public int getId_utilisateur(){
+       return id_utilisateur;
+    }
+
+    public int getId_post() {
+        return id_post;
+    }
+
+    public int getId_commentaire() {
+        return id_commentaire;
+    }
 }

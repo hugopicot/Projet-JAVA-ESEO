@@ -1,5 +1,5 @@
 package org.example.demo2.dao;
-import org.example.demo2.model.Post;
+
 import org.example.demo2.model.SignalementCommentaire;
 import org.example.demo2.util.DatabaseConnection;
 import java.sql.*;
