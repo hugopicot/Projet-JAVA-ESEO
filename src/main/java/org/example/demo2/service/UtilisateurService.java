@@ -1,11 +1,14 @@
 package org.example.demo2.service;
-import dao.UtilisateurDAO;
-import model.Utilisateur;
-import security.PasswordUtils;
+
+
+import org.example.demo2.dao.UtilisateurDao;
+import org.example.demo2.model.Utilisateur;
+import org.example.demo2.util.PasswordUtils;
+
 
 public class UtilisateurService {
 
-    private UtilisateurDAO utilisateurDAO = new UtilisateurDAO();
+    private UtilisateurDao utilisateurDAO = new UtilisateurDao();
     private Utilisateur utilisateurConnecte = null;
 
     // INSCRIPTION
@@ -19,6 +22,7 @@ public class UtilisateurService {
         String hashedPassword = PasswordUtils.hashPassword(motDePasse);
 
         Utilisateur utilisateur = new Utilisateur(
+                1,
                 pseudo,
                 email,
                 hashedPassword,

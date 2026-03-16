@@ -9,7 +9,7 @@ public class Utilisateur {
     private String pseudo;
     private String email;
     private String mot_de_passe;
-    private LocalDateTime date_inscription;
+    private Timestamp date_inscription;
     private int karma;
 
     public Utilisateur(int id_utilisateur, String pseudo, String email, String mot_de_passe, int karma) {
@@ -23,7 +23,7 @@ public class Utilisateur {
     public String getPseudo() { return pseudo; }
     public String getEmail() { return email; }
     public String getMotDePasse() { return mot_de_passe; }
-    public LocalDateTime getDateInscription() { return date_inscription; }
+    public Timestamp getDateInscription() { return date_inscription; }
     public int getKarma() { return karma; }
 
     public void setId(int id) { this.id_utilisateur = id; }

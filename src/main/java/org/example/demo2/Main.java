@@ -1,7 +1,8 @@
 package org.example.demo2;
 
 import javafx.application.Application;
-import service.UtilisateurService;
+import org.example.demo2.service.UtilisateurService;
+
 
 public class Main {
 

@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UtilisateurDAO {
+public class UtilisateurDao {
 
     private final String url = "jdbc:mysql://localhost:3306/forum_reddit_like";
     private final String user = "root";
@@ -54,7 +54,6 @@ public class UtilisateurDAO {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
-                        rs.getTimestamp("date_inscription"),
                         rs.getInt("karma")
                 );
             }
@@ -81,7 +80,6 @@ public class UtilisateurDAO {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
-                        rs.getTimestamp("date_inscription"),
                         rs.getInt("karma")
                 );
                 utilisateurs.add(utilisateur);
@@ -147,7 +145,6 @@ public class UtilisateurDAO {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
-                        rs.getTimestamp("date_inscription"),
                         rs.getInt("karma")
                 );
             }
@@ -175,7 +172,6 @@ public class UtilisateurDAO {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
-                        rs.getTimestamp("date_inscription"),
                         rs.getInt("karma")
                 );
             }
