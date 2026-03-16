@@ -2,6 +2,7 @@ package org.example.demo2.controller;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -30,7 +31,11 @@ public class PostGeneratorController {
 //        userImageBox.setImage(userImage);
         int userId = post.getId_utilisateur();
         Label userLabel = new Label("User " + userId);
-        userBox.getChildren().addAll(userImageBox, userLabel);
+        Button goToPostButton = new Button("hola");
+        goToPostButton.setOnAction(_ -> {
+//            TODO: how can I give to this button the main and accueil to remove them? HelloApplication lines 56-63
+        });
+        userBox.getChildren().addAll(userImageBox, userLabel, goToPostButton);
 
 
 

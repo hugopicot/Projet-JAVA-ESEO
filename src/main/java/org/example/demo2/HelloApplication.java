@@ -3,6 +3,9 @@ package org.example.demo2;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -31,17 +34,33 @@ public class HelloApplication extends Application {
         List<Post> allPosts = PostDao.getAll();
         String css = HelloApplication.class.getResource("styles.css").toExternalForm();
 
+        Button goToPost = new Button("Go to Post");
+
+
         HBox navbar = navBarController.generateNavbar(navbarLogoImage);
         VBox accueil = accueilController.generateAccueil(allPosts);
         VBox sidebar = sidebarController.generateSidebar(homeImage, usersImage);
         HBox main = new HBox();
 
-        main.getChildren().addAll(sidebar, accueil);
 
+        Button goToHome = new Button("Go to Home");
+        VBox postDetail = new VBox();
+        Label postDetailLabel = new Label("Hola");
+        postDetail.getChildren().addAll(postDetailLabel, goToHome);
+
+        main.getChildren().addAll(sidebar, accueil, goToPost);
         mainScene.getChildren().addAll(navbar, main);
 
 
         Scene scene = new Scene(mainScene, 1440, 720);
+        goToHome.setOnAction(_ -> {
+            main.getChildren().removeAll(postDetailLabel, goToHome);
+            main.getChildren().addAll(accueil, goToPost);
+        });
+        goToPost.setOnAction(_ -> {
+            main.getChildren().removeAll(accueil);
+            main.getChildren().addAll(postDetailLabel);
+        });
         scene.getStylesheets().add(css);
         stage.setTitle("Hello!");
         stage.setScene(scene);
