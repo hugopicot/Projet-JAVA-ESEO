@@ -20,7 +20,6 @@ public class Post {
         this.id_utilisateur = id_utilisateur;
         this.id_subreddit = id_subreddit;
     }
-
     public int getId_post(){
         return id_post;
     }
@@ -37,7 +36,7 @@ public class Post {
         return score;
     }
     public int getId_utilisateur(){
-        return (id_utilisateur);
+        return id_utilisateur;
     }
     public int getId_subreddit(){
         return id_subreddit;
