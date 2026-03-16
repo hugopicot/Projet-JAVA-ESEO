@@ -1,0 +1,31 @@
+.sidebar-wrapper {
+    -fx-min-height: 620px;
+    -fx-background-color: white;
+    -fx-min-width: 200px;
+    -fx-max-width: 200px;
+}
+
+.sidebar-item-wrapper {
+    -fx-background-color: #D0DDFD;
+    -fx-background-radius: 20px;
+    /*il marche, on doit configurer selon le figma*/
+    /*offsetX: -2, offsetY: -1, blur: 4.9, spread: 2*/
+    -fx-effect: innershadow( gaussian, rgba( 0, 0, 0, 0.1 ), 2, 2, -2, -1 );
+}
+
+.sidebar-item-wrapper .label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6993F9;
+}
+
+.sidebar-item-wrapper-2 {
+    -fx-background-color: white;
+
+}
+.sidebar-item-2 {
+    -fx-text-fill: black;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+

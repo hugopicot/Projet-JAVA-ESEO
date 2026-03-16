@@ -105,9 +105,104 @@ public class UtilisateurDao {
             ps.setInt(1, id);
             ps.executeUpdate();
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+}
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
+        return utilisateurs;
+    }
+
+    // UPDATE
+    public void updateUtilisateur(Utilisateur utilisateur) {
+        String sql = "UPDATE utilisateur SET pseudo=?, email=?, mot_de_passe=?, karma=? WHERE id_utilisateur=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, utilisateur.getPseudo());
+            stmt.setString(2, utilisateur.getEmail());
+            stmt.setString(3, utilisateur.getMotDePasse());
+            stmt.setInt(4, utilisateur.getKarma());
+            stmt.setInt(5, utilisateur.getId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // DELETE
+    public void deleteUtilisateur(int id) {
+        String sql = "DELETE FROM utilisateur WHERE id_utilisateur=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // LOGIN (bonus utile)
+    public Utilisateur login(String email, String motDePasse) {
+        String sql = "SELECT * FROM utilisateur WHERE email=? AND mot_de_passe=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            stmt.setString(2, motDePasse);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Utilisateur(
+                        rs.getInt("id_utilisateur"),
+                        rs.getString("pseudo"),
+                        rs.getString("email"),
+                        rs.getString("mot_de_passe"),
+                        rs.getInt("karma")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public Utilisateur getUtilisateurByEmail(String email) {
+        String sql = "SELECT * FROM utilisateur WHERE email = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Utilisateur(
+                        rs.getInt("id_utilisateur"),
+                        rs.getString("pseudo"),
+                        rs.getString("email"),
+                        rs.getString("mot_de_passe"),
+                        rs.getInt("karma")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
+

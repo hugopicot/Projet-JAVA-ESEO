@@ -7,7 +7,7 @@ public class Subreddit {
    public String nom;
   public String description;
   public  LocalDateTime  date_creation;
-  public  Subreddit(int id_subreddit, String nom, String description){
+  public  Subreddit(int id_subreddit, String nom, String description, LocalDateTime date_creation){
       this.id_subreddit = id_subreddit;
       this.nom = nom;
       this.description = description;
