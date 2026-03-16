@@ -3,6 +3,9 @@ import org.example.demo2.model.Utilisateur;
 import org.example.demo2.util.DatabaseConnection;
 import java.sql.*;
 import java.util.*;
+
+import static org.example.demo2.util.DatabaseConnection.getConnection;
+
 /**
  * Data Access Object pour les utilisateurs.
  */
@@ -11,7 +14,7 @@ public class UtilisateurDao {
     public List<Utilisateur>getAll() throws  SQLException {
         List<Utilisateur> utulisateur = new ArrayList<Utilisateur>();
         String sql = "SELECT * FROM Utilisateur";
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()){
@@ -20,7 +23,6 @@ public class UtilisateurDao {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                        rs.getString("mot_de_passe"),
-                     rs.getTimestamp("date_inscription").toLocalDateTime(),
                 rs.getInt("karma")));
 
             }
@@ -34,7 +36,7 @@ public class UtilisateurDao {
         Utilisateur utilisateur = null;
         String sql = "SELECT * FROM Utulisateur WHERE id_utilisateur = ?";
         try (
-                Connection conn = DatabaseConnection.getConnection();
+                Connection conn = getConnection();
                 PreparedStatement  ps = conn.prepareStatement(sql)) {
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
@@ -43,7 +45,6 @@ public class UtilisateurDao {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
-                        rs.getTimestamp("date_inscription").toLocalDateTime(),
                         rs.getInt("karma"));
 
 
@@ -57,14 +58,14 @@ public class UtilisateurDao {
     public void add(Utilisateur utulisateur) {
         String sql = "INSERT INTO utulisateur (id_utilisateur,pseudo,email,mot_de_passe,date_inscription,karma) VALUES (?, ?, ?,?,?,?)";
 
-        try (Connection conn = DatabaseConnection.getConnection();
+        try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, utulisateur.getId_utilisateur());
+            ps.setInt(1, utulisateur.getId());
             ps.setString(2, utulisateur.getPseudo());
             ps.setString(3, utulisateur.getEmail());
-            ps.setString(3, utulisateur.getMot_de_passe());
-            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDate_inscription()));
+            ps.setString(3, utulisateur.getMotDePasse());
+            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDateInscription().toLocalDateTime()));
             ps.setInt(3, utulisateur.getKarma());
 
 
@@ -80,14 +81,14 @@ public class UtilisateurDao {
     }
     public void update(Utilisateur utulisateur) throws SQLException {
         String sql = "UPDATE utulisateur  SET id_utilisateur = ?,pseudo = ?,email = ?,mot_de_passe = ?,date_inscription = ?,karma = ?  where id_utilisateur = ?";
-        try ( Connection conn = DatabaseConnection.getConnection();
+        try ( Connection conn = getConnection();
               PreparedStatement ps = conn.prepareStatement(sql)){
 
-            ps.setInt(1, utulisateur.getId_utilisateur());
+            ps.setInt(1, utulisateur.getId());
             ps.setString(2, utulisateur.getPseudo());
             ps.setString(3, utulisateur.getEmail());
-            ps.setString(3, utulisateur.getMot_de_passe());
-            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDate_inscription()));
+            ps.setString(3, utulisateur.getMotDePasse());
+            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDateInscription().toLocalDateTime()));
             ps.setInt(3, utulisateur.getKarma());
 
             ps.executeUpdate();
@@ -99,19 +100,17 @@ public class UtilisateurDao {
     public void delete(int id){
         String sql = "DELETE FROM Utulisateur  WHERE id_utilisateur = ?";
         try (
-                Connection conn = DatabaseConnection.getConnection();
+                Connection conn = getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)
         ){
             ps.setInt(1, id);
             ps.executeUpdate();
 
-}
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return utilisateurs;
+//        return utilisateurs;
     }
 
     // UPDATE

@@ -18,9 +18,9 @@ public class SubredditDao {
                 subreddits.add(new Subreddit(
                         rs.getInt("id_subreddit"),
                         rs.getString("nom"),
-                        rs.getString("description")));
-                         rs.getTimestamp("date_creation").toLocalDateTime();
-
+                        rs.getString("description"),
+                         rs.getTimestamp("date_creation").toLocalDateTime())
+                );
             }
         }
         catch (SQLException e){
@@ -39,8 +39,8 @@ public class SubredditDao {
             if(rs.next()){
                 subreddit= new Subreddit( rs.getInt("id_subreddit"),
                         rs.getString("nom"),
-                        rs.getString("description"));
-                        rs.getTimestamp("date_creation").toLocalDateTime();
+                        rs.getString("description"),
+                        rs.getTimestamp("date_creation").toLocalDateTime());
             }
         } catch (SQLException e) {
             e.printStackTrace();

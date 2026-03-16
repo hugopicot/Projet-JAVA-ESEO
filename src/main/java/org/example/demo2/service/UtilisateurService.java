@@ -29,7 +29,7 @@ public class UtilisateurService {
                 0
         );
 
-        utilisateurDAO.ajouterUtilisateur(utilisateur);
+        utilisateurDAO.add(utilisateur);
         return true;
     }
 
