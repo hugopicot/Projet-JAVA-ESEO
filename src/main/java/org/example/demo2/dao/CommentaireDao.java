@@ -1,110 +1,95 @@
 package org.example.demo2.dao;
 
 import org.example.demo2.model.Commentaire;
-
 import org.example.demo2.util.DatabaseConnection;
+
 import java.sql.*;
-import java.sql.Date;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommentaireDao {
 
-
-
-    public List<Commentaire>getAll() throws SQLException {
-        List<Commentaire> commentaire = new ArrayList<Commentaire>();
-        String sql = "SELECT * FROM Commentaire";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()){
-                commentaire.add(new Commentaire(
-                        rs.getString("contenu"),
-                        rs.getInt("id_commentaire"),
-                        rs.getTimestamp("date_creation").toLocalDateTime(),
-                        rs.getInt("score"),
-                        rs.getInt("id_utilisateur"),
-                        rs.getInt("id_post"),
-                        rs.getInt("id_parent")));
-            }
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-        }
-        return  commentaire;
-    }
-    public Commentaire findByid(int id){
-        Commentaire commentaire = null;
-        String sql = "SELECT * FROM commentaire WHERE id_commentaire = ?";
-        try (
-            Connection conn = DatabaseConnection.getConnection();
-           PreparedStatement  ps = conn.prepareStatement(sql)) {
-            ps.setInt(1,id);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                commentaire = new Commentaire(rs.getString("contenu"),rs.getInt("id_commentaire"),rs.getTimestamp("date_creation").toLocalDateTime(), rs.getInt("score"),
-                        rs.getInt("id_utilisateur"),
-                        rs.getInt("id_post"),
-                        rs.getInt("id_parent"));
-            }
-        } catch (SQLException e) {
-         e.printStackTrace();
-        }
-        return commentaire;
-
-    }
-    public void add(Commentaire commentaire) {
-        String sql = "INSERT INTO commentaire(contenu, id_commentaire, date_creation, score, id_utilisateur, id_post, id_parent) VALUES (?, ?, ?, ?, ?, ?,?)";
-
+    public List<Commentaire> findByPost(int idPost) {
+        List<Commentaire> commentaires = new ArrayList<>();
+        String sql = "SELECT * FROM commentaire WHERE id_post = ? ORDER BY date_creation ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idPost);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                commentaires.add(mapResultSetToCommentaire(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return commentaires;
+    }
 
-            ps.setString(1, commentaire.getContenu());
-            ps.setInt(2, commentaire.getId_commentaire());
-            ps.setTimestamp(3, Timestamp.valueOf(commentaire.getDate_creation()));
-            ps.setInt(4, commentaire.getScore());
-            ps.setInt(5, commentaire.getId_utilisateur());
-            ps.setInt(6, commentaire.getId_post());
-            ps.setInt(7, commentaire.getId_parent());
+    public int countByPost(int idPost) {
+        String sql = "SELECT COUNT(*) FROM commentaire WHERE id_post = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idPost);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public void add(Commentaire com) {
+        String sql = "INSERT INTO commentaire (contenu, date_creation, score, id_utilisateur, id_post, id_parent) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, com.getContenu());
+            ps.setTimestamp(2, Timestamp.valueOf(com.getDate_creation()));
+            ps.setInt(3, com.getScore());
+            ps.setInt(4, com.getId_utilisateur());
+            ps.setInt(5, com.getId_post());
+            if (com.getId_parent() != null && com.getId_parent() > 0) {
+                ps.setInt(6, com.getId_parent());
+            } else {
+                ps.setNull(6, Types.INTEGER);
+            }
 
             ps.executeUpdate();
-
-        } catch (SQLException  e) {
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                com.setId_commentaire(rs.getInt(1));
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
-
         }
     }
-    public void update(Commentaire commentaire) throws SQLException {
- String sql = "UPDATE commentaire SET contenu = ?,id_commentaire = ?,date_creation = ?,score = ?,id_utilisateur = ?,id_post = ?,id_parent = ?  where id_commentaire = ?";
- try ( Connection conn = DatabaseConnection.getConnection();
-       PreparedStatement ps = conn.prepareStatement(sql)){
-     ps.setString(1, commentaire.getContenu());
-     ps.setInt(2, commentaire.getId_commentaire());
-     ps.setTimestamp(3, Timestamp.valueOf(commentaire.getDate_creation()));
-     ps.setInt(4, commentaire.getScore());
-     ps.setInt(5, commentaire.getId_utilisateur());
-     ps.setInt(6, commentaire.getId_post());
-     ps.setInt(7, commentaire.getId_parent());
-     ps.executeUpdate();
- }
- catch (SQLException e){
- e.printStackTrace();
-}
-}
-  public void delete(int id){
-String sql = "DELETE FROM commentaire WHERE id_commentaire = ?";
-try (
-      Connection conn = DatabaseConnection.getConnection();
-      PreparedStatement ps = conn.prepareStatement(sql)
-        ){
-    ps.setInt(1, id);
-    ps.executeUpdate();
 
-} catch (Exception e) {
-    throw new RuntimeException(e);
-}
+    public void delete(int id) {
+        String sql = "DELETE FROM commentaire WHERE id_commentaire = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-}
+    private Commentaire mapResultSetToCommentaire(ResultSet rs) throws SQLException {
+        Integer idParent = rs.getInt("id_parent");
+        if (rs.wasNull()) idParent = null;
 
+        return new Commentaire(
+                rs.getInt("id_commentaire"),
+                rs.getString("contenu"),
+                rs.getTimestamp("date_creation").toLocalDateTime(),
+                rs.getInt("score"),
+                rs.getInt("id_utilisateur"),
+                rs.getInt("id_post"),
+                idParent
+        );
+    }
 }

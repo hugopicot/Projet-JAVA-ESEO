@@ -3,12 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ComboBox?>
+
 <VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.example.demo2.HelloController" stylesheets="@styles.css">
 
@@ -23,7 +26,16 @@
         </ImageView>
 
         <!--Search bar-->
-        <TextField promptText="Search..." styleClass="navbar-searchbar" />
+        <HBox spacing="10" alignment="CENTER">
+            <TextField promptText="Search..." styleClass="navbar-searchbar" />
+            <Button onAction="#handleRefresh" style="-fx-background-color: transparent; -fx-cursor: hand;">
+                <graphic>
+                   <ImageView pickOnBounds="true" preserveRatio="true">
+                       <Image url="@img/home_svg.png"/>
+                   </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
 
         <!-- Login button-->
         <Button styleClass="button-login">Login</Button>
@@ -32,16 +44,27 @@
     <!--Main-->
     <HBox>
         <!-- Sidebar -->
-        <VBox styleClass="sidebar-wrapper" alignment="TOP_CENTER" spacing="20">
-            <HBox styleClass="sidebar-item-wrapper" spacing="15" alignment="CENTER">
+        <VBox styleClass="sidebar-wrapper" alignment="TOP_CENTER" spacing="10">
+            <HBox fx:id="allFeedBox" styleClass="sidebar-item-wrapper" spacing="15" alignment="CENTER" 
+                  onMouseClicked="#afficherTousLesPosts" style="-fx-cursor: hand;">
                 <padding>
-                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+                    <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                 </padding>
                 <ImageView pickOnBounds="true" preserveRatio="true">
                     <Image url="@img/home_svg.png"/>
                 </ImageView>
-                <Label>Home</Label>
+                <Label>All Feed</Label>
             </HBox>
+            
+            <HBox spacing="10" alignment="CENTER">
+                <Label text="COMMUNITIES" style="-fx-text-fill: #888; -fx-font-size: 11; -fx-font-weight: bold;"/>
+                <Button text="+" onAction="#handleCreateSubreddit" 
+                        style="-fx-background-color: transparent; -fx-text-fill: #888; -fx-padding: 0; -fx-cursor: hand; -fx-font-size: 14;"/>
+            </HBox>
+            <VBox fx:id="subredditsContainer" spacing="5" alignment="TOP_CENTER">
+                <!-- Les subreddits seront ajoutés ici dynamiquement -->
+            </VBox>
+            
             <HBox styleClass="sidebar-item-wrapper-2" spacing="15" alignment="CENTER">
                 <ImageView pickOnBounds="true" preserveRatio="true">
                     <Image url="@img/user_svg.png"/>
@@ -50,108 +73,46 @@
             </HBox>
         </VBox>
 
-
-
-        <!--  Main  -->
-        <VBox alignment="TOP_RIGHT" spacing="20">
+        <!--  Main Content  -->
+        <VBox alignment="TOP_RIGHT" spacing="20" HBox.hgrow="ALWAYS">
             <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
+
             <!--Make a post-->
-            <VBox spacing="20" alignment="TOP_RIGHT" styleClass="make-post-wrapper">
+            <VBox spacing="10" alignment="TOP_RIGHT" styleClass="make-post-wrapper">
                 <padding>
                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
                 </padding>
-                <TextField promptText="Make a post..." styleClass="make-post-text"/>
-                <Button styleClass="make-post-button">Post</Button>
-            </VBox>
-
-            <!--Post 1-->
-            <!--Placeholder jusqu'a implementation avec backend-->
-            <VBox styleClass="post-item" alignment="CENTER_LEFT" spacing="20">
-                <padding>
-                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-                </padding>
-
-
-                <!--User-->
-                <HBox alignment="CENTER_LEFT" spacing="5">
-                    <ImageView pickOnBounds="true" preserveRatio="true">
-                        <Image url="@img/user_svg.png" />
-                    </ImageView>
-                    <Label>User</Label>
-                </HBox>
-
-
-
-                <!--Title-->
-                <Label styleClass="post-item-title">Lorem ipsum dolor sit amet</Label>
-
-
-
-                <!--Paragraph-->
-                <Label styleClass="post-item-paragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id mauris non massa suscipit sagittis. Nam nec semper diam. Nam vel tincidunt ante, quis semper risus. </Label>
-
-
-                <!--Buttons wrapper-->
-                <HBox spacing="20">
-                    <HBox>
-                        <Button id="like-button"  styleClass="make-post-button">
-                            <graphic>
-                                <ImageView pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@img/like_white.png" />
-                                </ImageView>
-                            </graphic>
-                            10
-                        </Button>
-                    </HBox>
-                    <HBox>
-
-                        <Button id="comment-button" styleClass="make-post-button-white">
-                            <graphic>
-                                <ImageView pickOnBounds="true" preserveRatio="true">
-                                    <Image url="@img/comment_svg.png" />
-                                </ImageView>
-                            </graphic>
-                            10
-                        </Button>
-                    </HBox>
+                <TextField fx:id="postTitleField" promptText="Titre du post..." styleClass="make-post-text"/>
+                <TextArea fx:id="postContentArea" promptText="Contenu du post..." prefRowCount="3" wrapText="true" styleClass="make-post-text"/>
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Label text="Poster dans :" style="-fx-text-fill: white;"/>
+                    <ComboBox fx:id="subredditComboBox" promptText="Choisir une communauté..." styleClass="navbar-searchbar" prefWidth="200"/>
+                    <Label fx:id="postingToLabel" text="r/Generic" visible="false" managed="false" style="-fx-text-fill: #3498db; -fx-font-weight: bold; -fx-font-size: 14;"/>
+                    <Label fx:id="postErrorLabel" styleClass="error-label" visible="false" managed="false"/>
+                    <Button styleClass="make-post-button" onAction="#handleCreatePost">Post</Button>
                 </HBox>
             </VBox>
 
-<!--            &lt;!&ndash;Post 1 Replica&ndash;&gt;-->
-<!--            <VBox></VBox>-->
+            <!-- Conteneur dynamique pour les posts -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS">
+                <VBox fx:id="postsContainer" spacing="20">
+                    <!-- Les posts seront ajoutés ici dynamiquement par Java -->
+                </VBox>
+            </ScrollPane>
 
-            <!--A futur: celle ci son les post auto generes par Java-->
         </VBox>
 
-
         <!--  Related Posts  -->
-        <VBox styleClass="related-posts-wrapper">
+        <VBox styleClass="related-posts-wrapper" minWidth="300">
             <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
             </padding>
-            <Label styleClass="related-posts-title">Related Posts</Label>
+            <Label fx:id="trendingTitleLabel" styleClass="related-posts-title" text="Trending Posts"/>
 
-            <!--Related Post 1, les suivants sont replicas-->
-            <VBox styleClass="related-post-item" spacing="15">
-                <padding>
-                    <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-                </padding>
-                <HBox alignment="CENTER_LEFT" spacing="5">
-                    <ImageView pickOnBounds="true" preserveRatio="true">
-                        <Image url="@img/user_svg.png" />
-                    </ImageView>
-                    <Label>User</Label>
-                </HBox>
-                <Label styleClass="related-post-label">Lorem ipsum dolor sit amet amet amet</Label>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <ImageView pickOnBounds="true" preserveRatio="true">
-                        <Image url="@img/like_svg.png" />
-                    </ImageView>
-                    <Label styleClass="related-post-item-likes-amount">10</Label>
-                </HBox>
-
+            <VBox fx:id="trendingContainer" spacing="15">
+                <!-- Les posts populaires seront ajoutés ici dynamiquement -->
             </VBox>
         </VBox>
     </HBox>
