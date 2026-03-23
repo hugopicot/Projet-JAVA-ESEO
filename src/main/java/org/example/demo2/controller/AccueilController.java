@@ -1,5 +1,5 @@
 package org.example.demo2.controller;
-
+import org.example.demo2.service.PostService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,34 +14,83 @@ import java.util.List;
 // 2. Add createPost function to button
 // 3. Refetch data
 
+
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import org.example.demo2.model.Post;
+import org.example.demo2.service.PostService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class AccueilController {
-    public VBox generateAccueil(List<Post> allPosts) {
+
+    private PostService postService = new PostService();  // Service qui utilise le DAO
+
+    // Ici currentUserId = id de l'utilisateur connecté
+    private int currentUserId = 1;        // Exemple, à remplacer par l'utilisateur réel
+    private int currentSubredditId = 1;   // Exemple, si tu gères les sous-forums
+
+    public VBox generateAccueil() {
+
         VBox mainBox = new VBox(20);
         mainBox.setAlignment(Pos.TOP_RIGHT);
         mainBox.setPadding(new Insets(20));
 
+
         VBox createPostBox = new VBox(20);
         createPostBox.setAlignment(Pos.TOP_RIGHT);
-        createPostBox.setPadding(new Insets(20));
 
-        // 1. Capture value here
         TextField postText = new TextField();
-        postText.setPromptText("Make a post...");
+        postText.setPromptText("Écris un post...");
         postText.getStyleClass().add("make-post-text");
 
-
-        // 2. Add createPost function here
         Button postButton = new Button("Post");
         postButton.getStyleClass().add("make-post-button");
-        //3. Re fetch data: how do I re fetch the data from here ?
+
+
+        PostGeneratorController controller = new PostGeneratorController();
+
+
+        VBox postsBox = controller.generateAllPosts(postService.getAllPosts());
+
+
+        postButton.setOnAction(e -> {
+            String text = postText.getText();
+
+            if (!text.isEmpty()) {
+
+
+                Post newPost = new Post(
+                        "Titre temporaire",  // ou ajoute un TextField pour le titre
+                        text,
+                        LocalDateTime.now(),
+                        0,
+                        currentUserId,
+                        currentSubredditId
+                );
+
+
+                postService.createPost(newPost);
+
+
+                List<Post> updatedPosts = postService.getAllPosts();
+                VBox newPostsBox = controller.generateAllPosts(updatedPosts);
+                mainBox.getChildren().set(1, newPostsBox);
+
+                postText.clear();
+            }
+        });
 
         createPostBox.getChildren().addAll(postText, postButton);
 
-        // posts box
-        PostGeneratorController postGeneratorController = new PostGeneratorController();
-        VBox postsBoxes = postGeneratorController.generateAllPosts(allPosts);
 
-        mainBox.getChildren().addAll(createPostBox, postsBoxes);
+        mainBox.getChildren().addAll(createPostBox, postsBox);
+
         return mainBox;
     }
 }
