@@ -1,8 +1,207 @@
 package org.example.demo2.dao;
+import org.example.demo2.model.Utilisateur;
+import org.example.demo2.util.DatabaseConnection;
+import java.sql.*;
+import java.util.*;
+
+import static org.example.demo2.util.DatabaseConnection.getConnection;
 
 /**
  * Data Access Object pour les utilisateurs.
  */
-public class UtilisateurDao {
 
+public class UtilisateurDao {
+    public List<Utilisateur>getAll() throws  SQLException {
+        List<Utilisateur> utulisateur = new ArrayList<Utilisateur>();
+        String sql = "SELECT * FROM Utilisateur";
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()){
+                utulisateur.add(new Utilisateur(
+                        rs.getInt("id_utilisateur"),
+                        rs.getString("pseudo"),
+                        rs.getString("email"),
+                       rs.getString("mot_de_passe"),
+                rs.getInt("karma")));
+
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return utulisateur ;
+    }
+    public Utilisateur findByid(int id){
+        Utilisateur utilisateur = null;
+        String sql = "SELECT * FROM Utulisateur WHERE id_utilisateur = ?";
+        try (
+                Connection conn = getConnection();
+                PreparedStatement  ps = conn.prepareStatement(sql)) {
+            ps.setInt(1,id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                utilisateur= new Utilisateur( rs.getInt("id_utilisateur"),
+                        rs.getString("pseudo"),
+                        rs.getString("email"),
+                        rs.getString("mot_de_passe"),
+                        rs.getInt("karma"));
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return utilisateur ;
+
+    }
+    public void add(Utilisateur utulisateur) {
+        String sql = "INSERT INTO utulisateur (id_utilisateur,pseudo,email,mot_de_passe,date_inscription,karma) VALUES (?, ?, ?,?,?,?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, utulisateur.getId());
+            ps.setString(2, utulisateur.getPseudo());
+            ps.setString(3, utulisateur.getEmail());
+            ps.setString(3, utulisateur.getMotDePasse());
+            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDateInscription().toLocalDateTime()));
+            ps.setInt(3, utulisateur.getKarma());
+
+
+
+
+
+            ps.executeUpdate();
+
+        } catch (SQLException  e) {
+            e.printStackTrace();
+
+        }
+    }
+    public void update(Utilisateur utulisateur) throws SQLException {
+        String sql = "UPDATE utulisateur  SET id_utilisateur = ?,pseudo = ?,email = ?,mot_de_passe = ?,date_inscription = ?,karma = ?  where id_utilisateur = ?";
+        try ( Connection conn = getConnection();
+              PreparedStatement ps = conn.prepareStatement(sql)){
+
+            ps.setInt(1, utulisateur.getId());
+            ps.setString(2, utulisateur.getPseudo());
+            ps.setString(3, utulisateur.getEmail());
+            ps.setString(3, utulisateur.getMotDePasse());
+            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDateInscription().toLocalDateTime()));
+            ps.setInt(3, utulisateur.getKarma());
+
+            ps.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public void delete(int id){
+        String sql = "DELETE FROM Utulisateur  WHERE id_utilisateur = ?";
+        try (
+                Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+//        return utilisateurs;
+    }
+
+    // UPDATE
+    public void updateUtilisateur(Utilisateur utilisateur) {
+        String sql = "UPDATE utilisateur SET pseudo=?, email=?, mot_de_passe=?, karma=? WHERE id_utilisateur=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, utilisateur.getPseudo());
+            stmt.setString(2, utilisateur.getEmail());
+            stmt.setString(3, utilisateur.getMotDePasse());
+            stmt.setInt(4, utilisateur.getKarma());
+            stmt.setInt(5, utilisateur.getId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // DELETE
+    public void deleteUtilisateur(int id) {
+        String sql = "DELETE FROM utilisateur WHERE id_utilisateur=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // LOGIN (bonus utile)
+    public Utilisateur login(String email, String motDePasse) {
+        String sql = "SELECT * FROM utilisateur WHERE email=? AND mot_de_passe=?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            stmt.setString(2, motDePasse);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Utilisateur(
+                        rs.getInt("id_utilisateur"),
+                        rs.getString("pseudo"),
+                        rs.getString("email"),
+                        rs.getString("mot_de_passe"),
+                        rs.getInt("karma")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    public Utilisateur getUtilisateurByEmail(String email) {
+        String sql = "SELECT * FROM utilisateur WHERE email = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Utilisateur(
+                        rs.getInt("id_utilisateur"),
+                        rs.getString("pseudo"),
+                        rs.getString("email"),
+                        rs.getString("mot_de_passe"),
+                        rs.getInt("karma")
+                );
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
+

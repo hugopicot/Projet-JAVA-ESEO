@@ -18,6 +18,22 @@ public class PostService {
         this.voteDao = new VoteDao();
     }
 
+    public void createPost(Post post) {
+        postDao.add(post);
+    }
+    
+    public List<Post> getAllPosts() {
+        return postDao.getAll();
+    }
+
+    public void updatePost(Post post) {
+        postDao.update(post);
+    }
+
+    public void deletePost(int id_post) {
+        postDao.delete(id_post);
+    }
+
     public void creerPost(String titre, String contenu, int idUtilisateur, int idSubreddit) {
         if (titre == null || titre.trim().isEmpty()) {
             throw new IllegalArgumentException("Le titre ne peut pas être vide.");

@@ -1,6 +1,5 @@
-@import 'css/sidebar.css';
-@import 'css/navbar.css';
-
+@import "sidebar.css";
+@import "navbar.css";
 
 .make-post-button, .make-post-button-white {
     -fx-background-color: #5B8DEF;
@@ -30,6 +29,8 @@
     -fx-border-color: rgba(0,0,0,0.1);
     -fx-border-radius: 10px;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 2, 0, 2);
+    -fx-max-width: 700px;
+    -fx-min-width: 500px;
 }
 
 .post-item {
@@ -64,11 +65,6 @@
     -fx-text-fill: white;
 }
 
-.buttons-wrapper {
-
-}
-
-
 .related-posts-wrapper {
     -fx-background-color: white;
     -fx-background-radius: 10px;
@@ -92,4 +88,12 @@
 
 .related-post-item-likes-amount {
     -fx-font-size: 16px;
+}
+
+.comments-wrapper {
+    -fx-border-width: 1px;
+    -fx-border-color: rgba(0,0,0,0.1);
+    -fx-border-radius: 10px;
+    -fx-max-width: 700px;
+    -fx-min-width: 500px;
 }

@@ -121,15 +121,17 @@ public class PostDao {
      * Met à jour un post existant.
      */
     public void update(Post post) {
-        String sql = "UPDATE post SET titre = ?, contenu = ?, score = ?, id_subreddit = ? WHERE id_post = ?";
+        String sql = "UPDATE post SET titre = ?, contenu = ?, date_creation = ?, score = ?, id_utilisateur = ?, id_subreddit = ? WHERE id_post = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, post.getTitre());
             ps.setString(2, post.getContenu());
-            ps.setInt(3, post.getScore());
-            ps.setInt(4, post.getId_subreddit());
-            ps.setInt(5, post.getId_post());
+            ps.setTimestamp(3, Timestamp.valueOf(post.getDate_creation()));
+            ps.setInt(4, post.getScore());
+            ps.setInt(5, post.getId_utilisateur());
+            ps.setInt(6, post.getId_subreddit());
+            ps.setInt(7, post.getId_post());
 
             ps.executeUpdate();
         } catch (SQLException e) {

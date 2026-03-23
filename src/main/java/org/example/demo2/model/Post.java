@@ -23,7 +23,17 @@ public class Post {
         this.id_subreddit = id_subreddit;
     }
 
-    // Constructeur SANS ID (pour créer un nouveau post)
+    // Constructeur sans ID généré
+    public Post(String titre, String contenu, LocalDateTime date_creation, int score, int id_utilisateur, int id_subreddit) {
+        this.titre = titre;
+        this.contenu = contenu;
+        this.date_creation = date_creation;
+        this.score = score;
+        this.id_utilisateur = id_utilisateur;
+        this.id_subreddit = id_subreddit;
+    }
+
+    // Constructeur SANS ID pour créer un nouveau post depuis l'UI
     public Post(String titre, String contenu, int id_utilisateur, int id_subreddit) {
         this.titre = titre;
         this.contenu = contenu;
@@ -43,6 +53,11 @@ public class Post {
     }
 
     public String getContenu() {
+        return contenu;
+    }
+
+    // Alias from main branch to preserve compatibility if needed
+    public String getContent() {
         return contenu;
     }
 

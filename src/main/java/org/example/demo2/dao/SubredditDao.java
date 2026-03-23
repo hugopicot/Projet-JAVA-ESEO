@@ -56,6 +56,34 @@ public class SubredditDao {
         }
     }
 
+    public void update(Subreddit subreddit) {
+        String sql = "UPDATE subreddit SET nom = ?, description = ?, date_creation = ?  where id_subreddit = ?";
+        try ( Connection conn = DatabaseConnection.getConnection();
+              PreparedStatement ps = conn.prepareStatement(sql)){
+
+            ps.setString(1, subreddit.getNom());
+            ps.setString(2, subreddit.getDescription());
+            ps.setTimestamp(3, Timestamp.valueOf(subreddit.getDate_creation()));
+            ps.setInt(4, subreddit.getId_subreddit());
+
+            ps.executeUpdate();
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void delete(int id) {
+        String sql = "DELETE FROM subreddit WHERE id_subreddit = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private Subreddit mapResultSetToSubreddit(ResultSet rs) throws SQLException {
         return new Subreddit(
                 rs.getInt("id_subreddit"),
