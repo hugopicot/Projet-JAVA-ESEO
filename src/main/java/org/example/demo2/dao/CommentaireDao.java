@@ -1,5 +1,6 @@
 package org.example.demo2.dao;
 
+import org.example.demo2.dao.interfaces.ICommentaireDao;
 import org.example.demo2.model.Commentaire;
 import org.example.demo2.util.DatabaseConnection;
 
@@ -7,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommentaireDao {
+public class CommentaireDao implements ICommentaireDao {
 
     public List<Commentaire> findByPost(int idPost) {
         List<Commentaire> commentaires = new ArrayList<>();

@@ -1,5 +1,6 @@
 package org.example.demo2.dao;
 
+import org.example.demo2.dao.interfaces.IVoteDao;
 import org.example.demo2.model.Vote;
 import org.example.demo2.util.DatabaseConnection;
 
@@ -7,7 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VoteDao {
+public class VoteDao implements IVoteDao {
 
     public List<Vote> getAll() {
         List<Vote> vote = new ArrayList<>();

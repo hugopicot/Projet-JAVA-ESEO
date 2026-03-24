@@ -1,20 +1,18 @@
 package org.example.demo2.dao;
+
+import org.example.demo2.dao.interfaces.IUtilisateurDao;
 import org.example.demo2.model.Utilisateur;
 import org.example.demo2.util.DatabaseConnection;
+
 import java.sql.*;
 import java.util.*;
 
-import static org.example.demo2.util.DatabaseConnection.getConnection;
-
-/**
- * Data Access Object pour les utilisateurs.
- */
-
-public class UtilisateurDao {
-    public List<Utilisateur>getAll() throws  SQLException {
+public class UtilisateurDao implements IUtilisateurDao {
+    @Override
+    public List<Utilisateur> getAll() {
         List<Utilisateur> utulisateur = new ArrayList<Utilisateur>();
         String sql = "SELECT * FROM Utilisateur";
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()){
@@ -32,11 +30,12 @@ public class UtilisateurDao {
         }
         return utulisateur ;
     }
-    public Utilisateur findByid(int id){
+    @Override
+    public Utilisateur findById(int id){
         Utilisateur utilisateur = null;
         String sql = "SELECT * FROM utilisateur WHERE id_utilisateur = ?";
         try (
-                Connection conn = getConnection();
+                Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement  ps = conn.prepareStatement(sql)) {
             ps.setInt(1,id);
             ResultSet rs = ps.executeQuery();
@@ -56,10 +55,11 @@ public class UtilisateurDao {
         return utilisateur ;
 
     }
+    @Override
     public void add(Utilisateur utulisateur) {
         String sql = "INSERT INTO utilisateur (pseudo, email, mot_de_passe, date_inscription, karma) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)";
 
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, utulisateur.getPseudo());
@@ -79,9 +79,10 @@ public class UtilisateurDao {
         }
     }
 
-    public void update(Utilisateur utulisateur) throws SQLException {
+    @Override
+    public void update(Utilisateur utulisateur) {
         String sql = "UPDATE utilisateur SET pseudo = ?, email = ?, mot_de_passe = ?, karma = ? WHERE id_utilisateur = ?";
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, utulisateur.getPseudo());
@@ -96,10 +97,11 @@ public class UtilisateurDao {
             e.printStackTrace();
         }
     }
+    @Override
     public void delete(int id){
         String sql = "DELETE FROM utilisateur WHERE id_utilisateur = ?";
         try (
-                Connection conn = getConnection();
+                Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)
         ){
             ps.setInt(1, id);
@@ -113,10 +115,11 @@ public class UtilisateurDao {
     }
 
     // UPDATE
+    @Override
     public void updateUtilisateur(Utilisateur utilisateur) {
         String sql = "UPDATE utilisateur SET pseudo=?, email=?, mot_de_passe=?, karma=? WHERE id_utilisateur=?";
 
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, utilisateur.getPseudo());
@@ -133,10 +136,11 @@ public class UtilisateurDao {
     }
 
     // DELETE
+    @Override
     public void deleteUtilisateur(int id) {
         String sql = "DELETE FROM utilisateur WHERE id_utilisateur=?";
 
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
@@ -151,7 +155,7 @@ public class UtilisateurDao {
     public Utilisateur login(String email, String motDePasse) {
         String sql = "SELECT * FROM utilisateur WHERE email=? AND mot_de_passe=?";
 
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
@@ -178,10 +182,11 @@ public class UtilisateurDao {
     }
 
 
+    @Override
     public Utilisateur getUtilisateurByEmail(String email) {
         String sql = "SELECT * FROM utilisateur WHERE email = ?";
 
-        try (Connection conn = getConnection();
+        try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);

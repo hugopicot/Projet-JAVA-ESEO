@@ -1,9 +1,6 @@
 package org.example.demo2.dao;
 
-/**
- * Data Access Object pour les posts.
- */
-
+import org.example.demo2.dao.interfaces.IPostDao;
 import org.example.demo2.model.Post;
 import org.example.demo2.util.DatabaseConnection;
 
@@ -11,7 +8,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class PostDao {
+public class PostDao implements IPostDao {
 
     /**
      * Récupère TOUS les posts, triés du plus récent au plus ancien.

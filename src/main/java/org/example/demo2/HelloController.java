@@ -110,8 +110,11 @@ public class HelloController implements Initializable,
         createPostController = new CreatePostController(postService, subredditService, utilisateurService);
         createPostController.setUtilisateurConnecteId(utilisateurConnecteId);
         createPostController.setOnPostCreated(() -> {
-            feedController.chargerPosts();
-            trendingController.chargerTrendingPosts();
+            javafx.application.Platform.runLater(() -> {
+                feedController.chargerPosts();
+                trendingController.chargerTrendingPosts();
+                sidebarController.chargerSubreddits();
+            });
         });
     }
     
@@ -319,7 +322,4 @@ public class HelloController implements Initializable,
         HBox.setHgrow(mainContentContainer.getChildren().get(1), Priority.ALWAYS);
     }
 
-    public void setUtilisateurConnecteId(int id) {
-        updateConnectedUser(id);
-    }
 }

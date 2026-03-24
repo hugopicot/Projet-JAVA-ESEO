@@ -44,12 +44,7 @@
                 <!-- Les subreddits seront ajoutés ici dynamiquement -->
             </VBox>
             
-            <HBox styleClass="sidebar-item-wrapper-2" spacing="15" alignment="CENTER">
-                <ImageView pickOnBounds="true" preserveRatio="true">
-                    <Image url="@img/user_svg.png"/>
-                </ImageView>
-                <Label styleClass="sidebar-item-2">Users</Label>
-            </HBox>
+
         </VBox>
 
         <!--  Main Content  -->

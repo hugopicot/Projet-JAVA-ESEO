@@ -46,16 +46,11 @@ public class ProfileController {
         root.setSpacing(0);
         root.setStyle("-fx-background-color: white;");
 
-        // Conteneur principal avec HGrow
         HBox mainContent = new HBox();
         mainContent.setSpacing(0);
-
-        // Colonne principale du profil
         VBox profileContent = createProfileContent();
         mainContent.getChildren().add(profileContent);
         HBox.setHgrow(profileContent, Priority.ALWAYS);
-
-        // Colonne latérale avec les statistiques
         VBox statsSidebar = createStatsSidebar();
         mainContent.getChildren().add(statsSidebar);
 
@@ -74,12 +69,8 @@ public class ProfileController {
         // En-tête du profil
         HBox header = createProfileHeader();
         container.getChildren().add(header);
-
-        // Séparateur
         Separator separator = new Separator();
         container.getChildren().add(separator);
-
-        // Section des posts de l'utilisateur
         Label postsTitle = new Label("Mes publications");
         postsTitle.setStyle("-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #333;");
         container.getChildren().add(postsTitle);
@@ -131,10 +122,8 @@ public class ProfileController {
 
         Label pseudoLabel = new Label(utilisateur.getPseudo());
         pseudoLabel.setStyle("-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
-
         Label emailLabel = new Label(utilisateur.getEmail());
         emailLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #7f8c8d;");
-
         String dateInscription = utilisateur.getDateInscription() != null 
             ? utilisateur.getDateInscription().toLocalDateTime().format(DATE_FORMAT) 
             : "Non disponible";
@@ -148,7 +137,6 @@ public class ProfileController {
         karmaLabel.setStyle("-fx-font-size: 16; -fx-text-fill: #f39c12; -fx-font-weight: bold;");
 
         infoBox.getChildren().addAll(pseudoLabel, emailLabel, dateLabel, karmaLabel);
-
         header.getChildren().addAll(avatarBox, infoBox);
 
         return header;

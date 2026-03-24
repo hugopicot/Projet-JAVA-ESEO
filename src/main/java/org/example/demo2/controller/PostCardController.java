@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 
 public class PostCardController {
-
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm");
     
     private final PostService postService;
@@ -47,15 +46,12 @@ public class PostCardController {
     public void setUtilisateurConnecteId(int id) {
         this.utilisateurConnecteId = id;
     }
-    
     public void setOnPostClick(Consumer<Post> callback) {
         this.onPostClick = callback;
     }
-    
     public void setOnLoginRequired(Runnable callback) {
         this.onLoginRequired = callback;
     }
-    
     public void setOnLoginSuccess(Consumer<Utilisateur> callback) {
         this.onLoginSuccess = callback;
     }

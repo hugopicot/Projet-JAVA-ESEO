@@ -2,6 +2,8 @@ module:org.example.demo2
 org.example.demo2
 org.example.demo2.controller
 org.example.demo2.dao
+org.example.demo2.dao.interfaces
 org.example.demo2.model
 org.example.demo2.service
+org.example.demo2.service.interfaces
 org.example.demo2.util

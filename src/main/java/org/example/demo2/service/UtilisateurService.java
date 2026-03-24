@@ -66,6 +66,6 @@ public class UtilisateurService {
 
     // Récupérer utilisateur par ID
     public Utilisateur getUtilisateurParId(int id) {
-        return utilisateurDAO.findByid(id);
+        return utilisateurDAO.findById(id);
     }
 }
