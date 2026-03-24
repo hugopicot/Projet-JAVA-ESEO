@@ -45,6 +45,7 @@ public class UtilisateurDao {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
+                        rs.getTimestamp("date_inscription"),
                         rs.getInt("karma"));
 
 
@@ -164,6 +165,7 @@ public class UtilisateurDao {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
+                        rs.getTimestamp("date_inscription"),
                         rs.getInt("karma")
                 );
             }
@@ -191,6 +193,7 @@ public class UtilisateurDao {
                         rs.getString("pseudo"),
                         rs.getString("email"),
                         rs.getString("mot_de_passe"),
+                        rs.getTimestamp("date_inscription"),
                         rs.getInt("karma")
                 );
             }

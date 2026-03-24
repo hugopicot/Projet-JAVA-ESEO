@@ -1,6 +1,7 @@
 package org.example.demo2;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,8 +9,11 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.example.demo2.controller.NavBarController;
+import org.example.demo2.controller.PostDetailController;
+import org.example.demo2.controller.ProfileController;
 import org.example.demo2.model.Commentaire;
 import org.example.demo2.model.Post;
 import org.example.demo2.model.Subreddit;
@@ -21,14 +25,20 @@ import org.example.demo2.service.SignalementService;
 import org.example.demo2.service.SubredditService;
 import org.example.demo2.service.UtilisateurService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HelloController implements Initializable, NavBarController.LoginCallback {
+public class HelloController implements Initializable, NavBarController.LoginCallback, ProfileController.ProfileCallback {
 
-    // ===== Éléments FXML liés au formulaire de création =====
+    @FXML
+    private HBox navbarContainer;
+
+    @FXML
+    private HBox mainContentContainer;
+
     @FXML
     private TextField postTitleField;
 
@@ -51,17 +61,8 @@ public class HelloController implements Initializable, NavBarController.LoginCal
     private Label postingToLabel;
 
     @FXML
-    private Label postErrorLabel;
-
-    // ===== Conteneur où les posts s'affichent =====
-    @FXML
     private VBox postsContainer;
 
-    // ===== NavBar container =====
-    @FXML
-    private HBox navbarContainer;
-
-    // ===== Service métier =====
     private final PostService postService = new PostService();
     private final CommentaireService commentaireService = new CommentaireService();
     private final SubredditService subredditService = new SubredditService();
@@ -71,25 +72,54 @@ public class HelloController implements Initializable, NavBarController.LoginCal
 
     private final NavBarController navbarController = new NavBarController();
 
-    // Filtre actuel (null = tous les posts)
     private Subreddit subredditActuel = null;
-
-    // ===== ID de l'utilisateur connecté (obtenu depuis le service) =====
     private int utilisateurConnecteId = 1;
+    private VBox savedMainContentView = null;
 
-    // Formateur de date pour l'affichage
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm");
 
-    /**
-     * Appelé automatiquement par JavaFX quand la vue est chargée.
-     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (navbarContainer != null) {
-            String logoPath = getClass().getResource("img/nova_logo_new.png").toExternalForm();
+            String logoPath = getClass().getResource("/org/example/demo2/img/nova_logo_new.png").toExternalForm();
             HBox navbar = navbarController.generateNavbar(logoPath, utilisateurService, this);
             navbarContainer.getChildren().add(navbar);
         }
+        
+        if (allFeedBox != null) {
+            allFeedBox.setOnMouseClicked(e -> {
+                handleAllFeedClick(null);
+            });
+        }
+        
+        chargerSubreddits();
+        chargerPosts();
+        chargerTrendingPosts();
+        if (allFeedBox != null) {
+            gererHighlightSidebar(allFeedBox);
+        }
+        
+        // Save the original main view after initialization
+        javafx.application.Platform.runLater(() -> {
+            if (originalMainContentChildren == null) {
+                originalMainContentChildren = new java.util.ArrayList<>(mainContentContainer.getChildren());
+            }
+        });
+    }
+
+    @FXML
+    private void handleAllFeedClick(javafx.scene.input.MouseEvent event) {
+        // Always restore the original main view when clicking All Feed
+        if (originalMainContentChildren != null && !originalMainContentChildren.isEmpty()) {
+            mainContentContainer.getChildren().clear();
+            mainContentContainer.getChildren().addAll(originalMainContentChildren);
+        }
+        
+        // Clear saved state
+        savedMainContentChildren = null;
+        savedSubredditActuel = null;
+        subredditActuel = null;
+        
         chargerSubreddits();
         chargerPosts();
         chargerTrendingPosts();
@@ -100,6 +130,7 @@ public class HelloController implements Initializable, NavBarController.LoginCal
     public void onLoginSuccess(Utilisateur user) {
         utilisateurConnecteId = user.getId();
         chargerPosts();
+        chargerSubreddits();
         System.out.println("Bienvenue " + user.getPseudo() + " (ID: " + user.getId() + ")");
     }
 
@@ -107,6 +138,7 @@ public class HelloController implements Initializable, NavBarController.LoginCal
     public void onLogout() {
         utilisateurConnecteId = 1;
         chargerPosts();
+        chargerSubreddits();
         System.out.println("Déconnexion réussie");
     }
 
@@ -114,21 +146,81 @@ public class HelloController implements Initializable, NavBarController.LoginCal
     public void onRegisterSuccess(Utilisateur user) {
         utilisateurConnecteId = user.getId();
         chargerPosts();
+        chargerSubreddits();
         System.out.println("Compte cree! Bienvenue " + user.getPseudo() + " (ID: " + user.getId() + ")");
     }
 
-    private String getNomUtilisateur(int idUtilisateur) {
-        if (idUtilisateur == utilisateurConnecteId && utilisateurService.estAuthentifie()) {
-            return utilisateurService.getUtilisateurConnecte().getPseudo();
+    @Override
+    public void onProfileClick() {
+        if (!utilisateurService.estAuthentifie()) {
+            return;
         }
-        Utilisateur user = utilisateurService.getUtilisateurParId(idUtilisateur);
-        if (user != null) {
-            return user.getPseudo();
+        
+        Utilisateur user = utilisateurService.getUtilisateurConnecte();
+        navigateToProfile(user);
+    }
+
+    private void navigateToProfile(Utilisateur user) {
+        // Save current state before navigating to profile
+        if (savedMainContentChildren == null || savedMainContentChildren.isEmpty()) {
+            savedMainContentChildren = new java.util.ArrayList<>(mainContentContainer.getChildren());
+            savedSubredditActuel = subredditActuel;
         }
-        return "Utilisateur #" + idUtilisateur;
+        
+        ProfileController profileController = new ProfileController(user, this);
+        VBox profileView = profileController.generateView();
+        
+        VBox sidebar = (VBox) savedMainContentChildren.get(0);
+        
+        mainContentContainer.getChildren().clear();
+        mainContentContainer.getChildren().addAll(sidebar, profileView);
+        HBox.setHgrow(mainContentContainer.getChildren().get(1), Priority.ALWAYS);
+    }
+
+    // ProfileController.ProfileCallback methods
+    @Override
+    public void onBackToHome() {
+        if (savedMainContentChildren != null && !savedMainContentChildren.isEmpty()) {
+            mainContentContainer.getChildren().clear();
+            mainContentContainer.getChildren().addAll(savedMainContentChildren);
+            savedMainContentChildren = null;
+            savedSubredditActuel = null;
+        }
+        
+        subredditActuel = null;
+        chargerSubreddits();
+        chargerPosts();
+        chargerTrendingPosts();
+        gererHighlightSidebar(allFeedBox);
+    }
+
+    @Override
+    public void onPostClick(Post post) {
+        navigateToPostDetail(post);
+    }
+
+    private void gererHighlightSidebar(Object active) {
+        if (allFeedBox != null) {
+            allFeedBox.setStyle("-fx-cursor: hand; -fx-background-color: transparent;");
+        }
+        if (subredditsContainer != null) {
+            for (javafx.scene.Node node : subredditsContainer.getChildren()) {
+                if (node instanceof Button) {
+                    node.setStyle("-fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: black;");
+                }
+            }
+        }
+
+        if (active instanceof HBox) {
+            ((HBox) active).setStyle("-fx-cursor: hand; -fx-background-color: #3498db; -fx-background-radius: 5;");
+        } else if (active instanceof Button) {
+            ((Button) active).setStyle("-fx-background-color: #3498db; -fx-background-radius: 5; -fx-text-fill: white; -fx-cursor: hand;");
+        }
     }
 
     private void chargerSubreddits() {
+        if (subredditsContainer == null || subredditComboBox == null) return;
+        
         subredditsContainer.getChildren().clear();
         subredditComboBox.getItems().clear();
 
@@ -142,9 +234,8 @@ public class HelloController implements Initializable, NavBarController.LoginCal
         subredditComboBox.getItems().addAll(allSubs);
         List<Integer> abonnementsIds = abonnementService.getAbonnementsIds(utilisateurConnecteId);
 
-        // Section "MY COMMUNITIES"
         if (!abonnementsIds.isEmpty()) {
-            Label mineLabel = new Label("MY COMMUNITIES ⭐️");
+            Label mineLabel = new Label("MY COMMUNITIES");
             mineLabel.setStyle("-fx-text-fill: #aaa; -fx-font-size: 10; -fx-font-weight: bold; -fx-padding: 5 0 0 0;");
             subredditsContainer.getChildren().add(mineLabel);
             
@@ -155,225 +246,44 @@ public class HelloController implements Initializable, NavBarController.LoginCal
             }
         }
 
-        // Section "DISCOVER MORE"
-        Label allLabel = new Label("EXPLORE 🌍");
+        Label allLabel = new Label("EXPLORE");
         allLabel.setStyle("-fx-text-fill: #aaa; -fx-font-size: 10; -fx-font-weight: bold; -fx-padding: 10 0 0 0;");
         subredditsContainer.getChildren().add(allLabel);
 
         for (Subreddit sub : allSubs) {
-            // Uniquement si pas déjà dans mes abonnements
             if (!abonnementsIds.contains(sub.getId_subreddit())) {
                 subredditsContainer.getChildren().add(creerBoutonSubreddit(sub));
             }
         }
     }
 
-    private Button creerBoutonSubreddit(Subreddit sub) {
-        Button subBtn = new Button("r/" + sub.getNom());
-        subBtn.getStyleClass().add("sidebar-item-2");
-        subBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
-        subBtn.setPrefWidth(150);
-        subBtn.setOnAction(e -> {
-            subredditActuel = sub;
-            chargerPosts();
-            chargerTrendingPosts();
-            gererHighlightSidebar(subBtn);
-        });
-        return subBtn;
-    }
-
-    private void chargerTrendingPosts() {
-        trendingContainer.getChildren().clear();
-        
-        Integer currentId = (subredditActuel != null) ? subredditActuel.getId_subreddit() : null;
-        List<Post> topPosts = postService.getTopPostsParSubreddit(currentId, 3);
-
-        if (topPosts.isEmpty()) {
-            Label vide = new Label("Pas encore de top posts.");
-            vide.setStyle("-fx-text-fill: #888; -fx-padding: 10;");
-            trendingContainer.getChildren().add(vide);
-        } else {
-            for (Post post : topPosts) {
-                VBox card = new VBox(15);
-                card.getStyleClass().add("related-post-item"); // On réutilise le style CSS existant
-                card.setPadding(new Insets(15));
-                card.setStyle("-fx-background-color: white; -fx-background-radius: 15; -fx-border-color: #eeeeee; -fx-border-radius: 15;");
-                
-                // Header : User icon + name
-                HBox header = new HBox(8);
-                header.setAlignment(Pos.CENTER_LEFT);
-                try {
-                    ImageView userIcon = new ImageView(new Image(getClass().getResourceAsStream("img/user_svg.png")));
-                    userIcon.setFitWidth(20);
-                    userIcon.setPreserveRatio(true);
-                    header.getChildren().add(userIcon);
-                } catch (Exception e) {}
-                Label userLabel = new Label(getNomUtilisateur(post.getId_utilisateur()));
-                userLabel.setStyle("-fx-font-size: 10; -fx-text-fill: #555;");
-                header.getChildren().add(userLabel);
-                
-                // Title
-                Label titre = new Label(post.getTitre());
-                titre.getStyleClass().add("related-post-label");
-                titre.setWrapText(true);
-                titre.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
-                
-                // Footer : Like icon + count
-                HBox footer = new HBox(8);
-                footer.setAlignment(Pos.CENTER_LEFT);
-                try {
-                    ImageView likeIcon = new ImageView(new Image(getClass().getResourceAsStream("img/like_svg.png")));
-                    likeIcon.setFitWidth(16);
-                    likeIcon.setPreserveRatio(true);
-                    footer.getChildren().add(likeIcon);
-                } catch (Exception e) {}
-                Label scoreLabel = new Label(String.valueOf(post.getScore()));
-                scoreLabel.getStyleClass().add("related-post-item-likes-amount");
-                footer.getChildren().add(scoreLabel);
-                
-                card.getChildren().addAll(header, titre, footer);
-                
-                // Rendre la carte cliquable pour voir le flux du subreddit correspondant (optionnel mais sympa)
-                card.setStyle(card.getStyle() + " -fx-cursor: hand;");
-                
-                trendingContainer.getChildren().add(card);
-            }
-        }
-    }
-
-    @FXML
-    private void afficherTousLesPosts() {
-        subredditActuel = null;
-        chargerPosts();
-        chargerTrendingPosts();
-        gererHighlightSidebar(allFeedBox);
-    }
-
-    private void gererHighlightSidebar(Object active) {
-        // Reset styles
-        allFeedBox.setStyle("-fx-cursor: hand; -fx-background-color: transparent;");
-        for (javafx.scene.Node node : subredditsContainer.getChildren()) {
-            if (node instanceof Button) {
-                node.setStyle("-fx-background-color: transparent; -fx-cursor: hand; -fx-text-fill: black;");
-            }
-        }
-
-        // Apply style to active
-        if (active instanceof HBox) {
-            ((HBox) active).setStyle("-fx-cursor: hand; -fx-background-color: #3498db; -fx-background-radius: 5;");
-        } else if (active instanceof Button) {
-            ((Button) active).setStyle("-fx-background-color: #3498db; -fx-background-radius: 5; -fx-text-fill: white; -fx-cursor: hand;");
-        }
-    }
-
-    /**
-     * Rafraîchit l'affichage complet (posts et subreddits).
-     */
-    @FXML
-    private void handleRefresh() {
-        chargerSubreddits();
-        chargerPosts();
-        cacherErreur();
-    }
-
-    /**
-     * Crée un nouveau subreddit.
-     */
-    @FXML
-    private void handleCreateSubreddit() {
-        // Dialogue de création personnalisé
-        Dialog<Subreddit> dialog = new Dialog<>();
-        dialog.setTitle("Créer une Communauté");
-        dialog.setHeaderText("Entrez les détails du nouveau Subreddit");
-
-        ButtonType createButtonType = new ButtonType("Créer", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
-
-        VBox grid = new VBox(10);
-        TextField nomField = new TextField();
-        nomField.setPromptText("Nom (ex: java)");
-        TextArea descArea = new TextArea();
-        descArea.setPromptText("Description...");
-        descArea.setPrefRowCount(3);
-        
-        grid.getChildren().addAll(new Label("Nom :"), nomField, new Label("Description :"), descArea);
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == createButtonType) {
-                try {
-                    return subredditService.creerSubreddit(nomField.getText(), descArea.getText());
-                } catch (Exception e) {
-                    afficherErreur(e.getMessage());
-                }
-            }
-            return null;
-        });
-
-        dialog.showAndWait().ifPresent(sub -> {
-            chargerSubreddits(); // Rafraîchir Sidebar et ComboBox
-            afficherErreur("Subreddit r/" + sub.getNom() + " créé !");
-        });
-    }
-
-    /**
-     * Appelé quand l'utilisateur clique sur le bouton "Post".
-     */
-    @FXML
-    private void handleCreatePost() {
-        if (!utilisateurService.estAuthentifie()) {
-            navbarController.showLoginDialogWithCallback(() -> {
-                handleCreatePost();
-            });
-            return;
-        }
-        
-        String titre = postTitleField.getText();
-        String contenu = postContentArea.getText();
-        
-        Subreddit sub = (subredditActuel != null) ? subredditActuel : subredditComboBox.getValue();
-
-        try {
-            if (sub == null) {
-                throw new IllegalArgumentException("Veuillez choisir une communauté (Subreddit).");
-            }
-
-            postService.creerPost(titre, contenu, utilisateurConnecteId, sub.getId_subreddit());
-
-            // Effacer les champs du formulaire
-            postTitleField.clear();
-            postContentArea.clear();
-            cacherErreur();
-
-            // Rafraîchir la liste des posts
-            chargerPosts();
-
-        } catch (IllegalArgumentException e) {
-            afficherErreur(e.getMessage());
-        }
-    }
-
-    /**
-     * Charge tous les posts depuis la BDD et les affiche.
-     */
     private void chargerPosts() {
+        if (postsContainer == null) return;
+        
         postsContainer.getChildren().clear();
         List<Post> posts;
 
         if (subredditActuel == null) {
-            subredditComboBox.setVisible(true);
-            subredditComboBox.setManaged(true);
-            postingToLabel.setVisible(false);
-            postingToLabel.setManaged(false);
+            if (subredditComboBox != null) {
+                subredditComboBox.setVisible(true);
+                subredditComboBox.setManaged(true);
+            }
+            if (postingToLabel != null) {
+                postingToLabel.setVisible(false);
+                postingToLabel.setManaged(false);
+            }
             posts = postService.getTousLesPosts();
         } else {
-            subredditComboBox.setVisible(false);
-            subredditComboBox.setManaged(false);
-            postingToLabel.setText("r/" + subredditActuel.getNom());
-            postingToLabel.setVisible(true);
-            postingToLabel.setManaged(true);
+            if (subredditComboBox != null) {
+                subredditComboBox.setVisible(false);
+                subredditComboBox.setManaged(false);
+            }
+            if (postingToLabel != null) {
+                postingToLabel.setText("r/" + subredditActuel.getNom());
+                postingToLabel.setVisible(true);
+                postingToLabel.setManaged(true);
+            }
             
-            // Afficher l'en-tête du subreddit avec bouton Rejoindre/Quitter
             HBox header = new HBox(20);
             header.setAlignment(Pos.CENTER_LEFT);
             header.setStyle("-fx-background-color: #f1f2f6; -fx-padding: 15; -fx-background-radius: 10;");
@@ -418,15 +328,188 @@ public class HelloController implements Initializable, NavBarController.LoginCal
         }
     }
 
-    /**
-     * Crée une "carte" visuelle pour un post.
-     */
+    private void chargerTrendingPosts() {
+        if (trendingContainer == null) return;
+        
+        trendingContainer.getChildren().clear();
+        
+        Integer currentId = (subredditActuel != null) ? subredditActuel.getId_subreddit() : null;
+        List<Post> topPosts = postService.getTopPostsParSubreddit(currentId, 3);
+
+        if (topPosts.isEmpty()) {
+            Label vide = new Label("Pas encore de top posts.");
+            vide.setStyle("-fx-text-fill: #888; -fx-padding: 10;");
+            trendingContainer.getChildren().add(vide);
+        } else {
+            for (Post post : topPosts) {
+                VBox card = new VBox(15);
+                card.getStyleClass().add("related-post-item");
+                card.setPadding(new Insets(15));
+                card.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-cursor: hand;");
+                
+                HBox header = new HBox(8);
+                header.setAlignment(Pos.CENTER_LEFT);
+                try {
+                    ImageView userIcon = new ImageView(new Image(getClass().getResourceAsStream("img/user_svg.png")));
+                    userIcon.setFitWidth(20);
+                    userIcon.setPreserveRatio(true);
+                    header.getChildren().add(userIcon);
+                } catch (Exception e) {}
+                Label userLabel = new Label(getNomUtilisateur(post.getId_utilisateur()));
+                userLabel.setStyle("-fx-font-size: 10; -fx-text-fill: #555;");
+                header.getChildren().add(userLabel);
+                
+                Label titre = new Label(post.getTitre());
+                titre.setWrapText(true);
+                titre.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
+                
+                HBox footer = new HBox(8);
+                footer.setAlignment(Pos.CENTER_LEFT);
+                try {
+                    ImageView likeIcon = new ImageView(new Image(getClass().getResourceAsStream("img/like_svg.png")));
+                    likeIcon.setFitWidth(16);
+                    likeIcon.setPreserveRatio(true);
+                    footer.getChildren().add(likeIcon);
+                } catch (Exception e) {}
+                Label scoreLabel = new Label(String.valueOf(post.getScore()));
+                scoreLabel.setStyle("-fx-font-size: 11; -fx-text-fill: #888;");
+                footer.getChildren().add(scoreLabel);
+                
+                card.getChildren().addAll(header, titre, footer);
+                
+                card.setOnMouseClicked(e -> navigateToPostDetail(post));
+                
+                trendingContainer.getChildren().add(card);
+            }
+        }
+    }
+
+    public void setUtilisateurConnecteId(int id) {
+        this.utilisateurConnecteId = id;
+    }
+
+    private Subreddit savedSubredditActuel = null;
+    private List<javafx.scene.Node> savedMainContentChildren = null;
+    private List<javafx.scene.Node> originalMainContentChildren = null; // Save the original main view
+
+    private void navigateToPostDetail(Post post) {
+        savedSubredditActuel = subredditActuel;
+        savedMainContentChildren = new java.util.ArrayList<>(mainContentContainer.getChildren());
+        
+        PostDetailController detailController = new PostDetailController(post, new PostDetailController.PostDetailCallback() {
+            @Override
+            public void onBackToHome() {
+                mainContentContainer.getChildren().clear();
+                mainContentContainer.getChildren().addAll(savedMainContentChildren);
+                subredditActuel = savedSubredditActuel;
+                chargerPosts();
+                chargerTrendingPosts();
+            }
+
+            @Override
+            public void onLoginSuccess(Utilisateur user) {
+                utilisateurConnecteId = user.getId();
+                chargerSubreddits();
+                chargerPosts();
+                chargerTrendingPosts();
+            }
+
+            @Override
+            public void onLogout() {
+                utilisateurConnecteId = 1;
+                chargerSubreddits();
+                chargerPosts();
+                chargerTrendingPosts();
+            }
+
+            @Override
+            public void onRegisterSuccess(Utilisateur user) {
+                utilisateurConnecteId = user.getId();
+                chargerSubreddits();
+                chargerPosts();
+                chargerTrendingPosts();
+            }
+        });
+        detailController.setUtilisateurConnecteId(utilisateurConnecteId);
+        
+        VBox detailView = detailController.generateView();
+        HBox detailHBox = (HBox) detailView.getChildren().get(0);
+        VBox postDetail = (VBox) detailHBox.getChildren().get(0);
+        VBox relatedPosts = (VBox) detailHBox.getChildren().get(1);
+        
+        VBox sidebar = (VBox) savedMainContentChildren.get(0);
+        
+        mainContentContainer.getChildren().clear();
+        mainContentContainer.getChildren().addAll(sidebar, postDetail, relatedPosts);
+        HBox.setHgrow(mainContentContainer.getChildren().get(1), Priority.ALWAYS);
+    }
+
+    private String getNomUtilisateur(int idUtilisateur) {
+        if (idUtilisateur == utilisateurConnecteId && utilisateurService.estAuthentifie()) {
+            return utilisateurService.getUtilisateurConnecte().getPseudo();
+        }
+        Utilisateur user = utilisateurService.getUtilisateurParId(idUtilisateur);
+        if (user != null) {
+            return user.getPseudo();
+        }
+        return "Utilisateur #" + idUtilisateur;
+    }
+
+    private Button creerBoutonSubreddit(Subreddit sub) {
+        Button subBtn = new Button("r/" + sub.getNom());
+        subBtn.getStyleClass().add("sidebar-item-2");
+        subBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand;");
+        subBtn.setPrefWidth(150);
+        subBtn.setOnAction(e -> {
+            subredditActuel = sub;
+            chargerPosts();
+            chargerTrendingPosts();
+            gererHighlightSidebar(subBtn);
+        });
+        return subBtn;
+    }
+
+    @FXML
+    private void handleCreatePost() {
+        if (!utilisateurService.estAuthentifie()) {
+            navbarController.showLoginDialogWithCallback(() -> {
+                handleCreatePost();
+            });
+            return;
+        }
+        
+        String titre = postTitleField.getText();
+        String contenu = postContentArea.getText();
+        
+        Subreddit sub = (subredditActuel != null) ? subredditActuel : subredditComboBox.getValue();
+
+        try {
+            if (sub == null) {
+                throw new IllegalArgumentException("Veuillez choisir une communauté (Subreddit).");
+            }
+
+            postService.creerPost(titre, contenu, utilisateurConnecteId, sub.getId_subreddit());
+
+            postTitleField.clear();
+            postContentArea.clear();
+
+            chargerPosts();
+
+        } catch (IllegalArgumentException e) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Erreur");
+            alert.setHeaderText(e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
     private VBox creerCartePost(Post post) {
         VBox carte = new VBox(10);
         carte.getStyleClass().add("post-item");
         carte.setPadding(new Insets(20));
+        carte.setStyle(carte.getStyle() + "-fx-cursor: hand;");
+        carte.setOnMouseClicked(e -> navigateToPostDetail(post));
 
-        // --- Ligne utilisateur ---
         HBox userRow = new HBox(5);
         userRow.setAlignment(Pos.CENTER_LEFT);
         try {
@@ -434,33 +517,25 @@ public class HelloController implements Initializable, NavBarController.LoginCal
             userIcon.setPreserveRatio(true);
             userIcon.setPickOnBounds(true);
             userRow.getChildren().add(userIcon);
-        } catch (Exception e) {
-            // Si l'image n'est pas trouvée, on continue sans
-        }
+        } catch (Exception e) {}
         Label userLabel = new Label(getNomUtilisateur(post.getId_utilisateur()));
         userRow.getChildren().add(userLabel);
 
-        // --- Date ---
         Label dateLabel = new Label(post.getDate_creation().format(DATE_FORMAT));
         dateLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 11;");
 
-        // --- Titre ---
         Label titreLabel = new Label(post.getTitre());
         titreLabel.getStyleClass().add("post-item-title");
 
-        // --- Contenu ---
         Label contenuLabel = new Label(post.getContenu());
         contenuLabel.getStyleClass().add("post-item-paragraph");
         contenuLabel.setWrapText(true);
 
-        // --- Boutons (like + commentaire) ---
         HBox buttonsRow = new HBox(20);
 
-        // Bouton Like
         boolean dejaLike = postService.aDejaLike(post.getId_post(), utilisateurConnecteId);
         Button likeBtn = new Button(String.valueOf(post.getScore()));
         
-        // Appliquer un style différent si déjà liké
         if (dejaLike) {
             likeBtn.getStyleClass().add("make-post-button");
             likeBtn.setOpacity(0.7);
@@ -476,9 +551,7 @@ public class HelloController implements Initializable, NavBarController.LoginCal
             likeIcon.setPreserveRatio(true);
             likeIcon.setPickOnBounds(true);
             likeBtn.setGraphic(likeIcon);
-        } catch (Exception e) {
-            // Pas d'icône
-        }
+        } catch (Exception e) {}
         
         likeBtn.setOnAction(event -> {
             if (!utilisateurService.estAuthentifie()) {
@@ -494,7 +567,6 @@ public class HelloController implements Initializable, NavBarController.LoginCal
             }
         });
 
-        // Bouton Commentaire
         int nbCom = commentaireService.getNombreCommentaires(post.getId_post());
         Button commentBtn = new Button(String.valueOf(nbCom));
         commentBtn.getStyleClass().add("make-post-button-white");
@@ -504,17 +576,13 @@ public class HelloController implements Initializable, NavBarController.LoginCal
             commentIcon.setPreserveRatio(true);
             commentIcon.setPickOnBounds(true);
             commentBtn.setGraphic(commentIcon);
-        } catch (Exception e) {
-            // Pas d'icône
-        }
+        } catch (Exception e) {}
         
-        // --- Section Commentaires (Masquée par défaut) ---
         VBox commentsSection = new VBox(5);
-        commentsSection.setPadding(new Insets(10, 0, 0, 20)); // Indentation pour les replies
+        commentsSection.setPadding(new Insets(10, 0, 0, 20));
         commentsSection.setVisible(false);
         commentsSection.setManaged(false);
 
-        // Champ de réponse rapide
         HBox replyBox = new HBox(10);
         TextField replyField = new TextField();
         replyField.setPromptText("Écrire une réponse...");
@@ -562,7 +630,6 @@ public class HelloController implements Initializable, NavBarController.LoginCal
         replyBox.getChildren().addAll(replyField, replySubmit);
         commentsSection.getChildren().add(replyBox);
 
-        // Ajouter les commentaires existants
         List<Commentaire> coms = commentaireService.getCommentairesPost(post.getId_post());
         for (Commentaire com : coms) {
             VBox comBox = new VBox(2);
@@ -593,7 +660,6 @@ public class HelloController implements Initializable, NavBarController.LoginCal
             commentsSection.setManaged(visible);
         });
 
-        // Bouton Signaler Post
         Button reportBtn = new Button("Signaler");
         reportBtn.getStyleClass().add("make-post-button-white");
         reportBtn.setStyle("-fx-text-fill: #e74c3c;");
@@ -605,7 +671,6 @@ public class HelloController implements Initializable, NavBarController.LoginCal
 
         buttonsRow.getChildren().addAll(likeBtn, commentBtn, reportBtn);
 
-        // Bouton Supprimer (visible seulement pour l'auteur connecté)
         if (utilisateurService.estAuthentifie() && post.getId_utilisateur() == utilisateurConnecteId) {
             Button deleteBtn = new Button("Supprimer");
             deleteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5;");
@@ -625,23 +690,8 @@ public class HelloController implements Initializable, NavBarController.LoginCal
             buttonsRow.getChildren().add(deleteBtn);
         }
 
-        // --- Assembler la carte ---
         carte.getChildren().addAll(userRow, dateLabel, titreLabel, contenuLabel, buttonsRow, commentsSection);
 
         return carte;
-    }
-
-    // ===== Méthodes utilitaires pour le label d'erreur =====
-
-    private void afficherErreur(String message) {
-        postErrorLabel.setText(message);
-        postErrorLabel.setVisible(true);
-        postErrorLabel.setManaged(true);
-        postErrorLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;");
-    }
-
-    private void cacherErreur() {
-        postErrorLabel.setVisible(false);
-        postErrorLabel.setManaged(false);
     }
 }

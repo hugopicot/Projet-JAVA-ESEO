@@ -18,6 +18,16 @@ public class Utilisateur {
         this.mot_de_passe = mot_de_passe;
         this.karma = karma;
     }
+
+    public Utilisateur(int id_utilisateur, String pseudo, String email, String mot_de_passe, Timestamp date_inscription, int karma) {
+        this.id_utilisateur = id_utilisateur;
+        this.pseudo = pseudo;
+        this.email = email;
+        this.mot_de_passe = mot_de_passe;
+        this.date_inscription = date_inscription;
+        this.karma = karma;
+    }
+
     public int getId() { return id_utilisateur; }
     public String getPseudo() { return pseudo; }
     public String getEmail() { return email; }
@@ -26,5 +36,5 @@ public class Utilisateur {
     public int getKarma() { return karma; }
 
     public void setId(int id) { this.id_utilisateur = id; }
-
+    public void setDateInscription(Timestamp date_inscription) { this.date_inscription = date_inscription; }
 }

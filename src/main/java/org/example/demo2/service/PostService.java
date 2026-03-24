@@ -99,4 +99,8 @@ public class PostService {
     public List<Post> getPostsParUtilisateur(int idUtilisateur) {
         return postDao.getByUtilisateur(idUtilisateur);
     }
+
+    public Post getPostById(int idPost) {
+        return postDao.findById(idPost);
+    }
 }

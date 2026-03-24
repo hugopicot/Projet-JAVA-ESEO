@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ButtonType;
@@ -23,12 +24,14 @@ public class NavBarController {
         void onLoginSuccess(Utilisateur user);
         void onLogout();
         void onRegisterSuccess(Utilisateur user);
+        void onProfileClick();
     }
     
     private HBox userSection;
     private Label usernameLabel;
     private Button loginButton;
     private Button logoutButton;
+    private Button profileButton;
     private Button createAccountButton;
     private UtilisateurService service;
     private LoginCallback callback;
@@ -37,10 +40,13 @@ public class NavBarController {
         this.service = service;
         this.callback = callback;
         
-        HBox mainBox = new HBox(400);
-        mainBox.setAlignment(Pos.valueOf("CENTER"));
+        HBox mainBox = new HBox(50);
+        mainBox.setAlignment(Pos.CENTER);
+        mainBox.setSpacing(50);
         Insets mainBoxPadding = new Insets(20);
         mainBox.setPadding(mainBoxPadding);
+        mainBox.setStyle("-fx-background-color: #EAEEF7; -fx-min-height: 80px;");
+        HBox.setHgrow(mainBox, Priority.ALWAYS);
 
         ImageView novaLogo = new ImageView();
         Image novaLogoImage = new Image(image);
@@ -67,6 +73,16 @@ public class NavBarController {
         logoutButton.setManaged(false);
         logoutButton.setOnAction(e -> handleLogout());
 
+        profileButton = new Button("Profil");
+        profileButton.getStyleClass().add("button-login");
+        profileButton.setVisible(false);
+        profileButton.setManaged(false);
+        profileButton.setOnAction(e -> {
+            if (callback != null) {
+                callback.onProfileClick();
+            }
+        });
+
         usernameLabel = new Label();
         usernameLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #3498db;");
 
@@ -90,12 +106,16 @@ public class NavBarController {
             Utilisateur user = service.getUtilisateurConnecte();
             usernameLabel.setText(user.getPseudo());
             userSection.getChildren().clear();
-            userSection.getChildren().addAll(usernameLabel, logoutButton);
+            userSection.getChildren().addAll(usernameLabel, profileButton, logoutButton);
+            profileButton.setVisible(true);
+            profileButton.setManaged(true);
             logoutButton.setVisible(true);
             logoutButton.setManaged(true);
         } else {
             userSection.getChildren().clear();
             userSection.getChildren().addAll(loginButton, createAccountButton);
+            profileButton.setVisible(false);
+            profileButton.setManaged(false);
             logoutButton.setVisible(false);
             logoutButton.setManaged(false);
         }

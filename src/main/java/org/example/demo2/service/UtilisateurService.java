@@ -4,12 +4,12 @@ package org.example.demo2.service;
 import org.example.demo2.dao.UtilisateurDao;
 import org.example.demo2.model.Utilisateur;
 import org.example.demo2.util.PasswordUtils;
+import org.example.demo2.util.SessionManager;
 
 
 public class UtilisateurService {
 
     private UtilisateurDao utilisateurDAO = new UtilisateurDao();
-    private Utilisateur utilisateurConnecte = null;
 
     // INSCRIPTION
     public boolean inscrire(String pseudo, String email, String motDePasse) {
@@ -42,7 +42,7 @@ public class UtilisateurService {
         }
 
         if (PasswordUtils.checkPassword(motDePasse, utilisateur.getMotDePasse())) {
-            utilisateurConnecte = utilisateur;
+            SessionManager.getInstance().setUtilisateurConnecte(utilisateur);
             return true;
         }
 
@@ -51,17 +51,17 @@ public class UtilisateurService {
 
     // LOGOUT
     public void logout() {
-        utilisateurConnecte = null;
+        SessionManager.getInstance().logout();
     }
 
     // Vérifie si utilisateur connecté
     public boolean estAuthentifie() {
-        return utilisateurConnecte != null;
+        return SessionManager.getInstance().estAuthentifie();
     }
 
     // Récupérer utilisateur connecté
     public Utilisateur getUtilisateurConnecte() {
-        return utilisateurConnecte;
+        return SessionManager.getInstance().getUtilisateurConnecte();
     }
 
     // Récupérer utilisateur par ID

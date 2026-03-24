@@ -10,7 +10,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1200, 800); // Légèrement plus haut pour les commentaires
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 800);
         stage.setTitle("Nova Forum - Projet ESEO");
         stage.setScene(scene);
         stage.show();

@@ -24,6 +24,22 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `abonnement`
+--
+
+DROP TABLE IF EXISTS `abonnement`;
+CREATE TABLE IF NOT EXISTS `abonnement` (
+  `id_utilisateur` int NOT NULL,
+  `id_subreddit` int NOT NULL,
+  `date_abonnement` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_utilisateur`, `id_subreddit`),
+  KEY `id_utilisateur` (`id_utilisateur`),
+  KEY `id_subreddit` (`id_subreddit`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `commentaire`
 --
 
