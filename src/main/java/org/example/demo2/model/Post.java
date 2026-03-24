@@ -11,8 +11,8 @@ public class Post {
     private int id_utilisateur;
     private int id_subreddit;
 
-    public Post(int id_post, String titre, String contenu, LocalDateTime date_creation, int score, int id_utilisateur, int id_subreddit) {
-        this.id_post = id_post;
+    public Post(String titre, String contenu, LocalDateTime date_creation, int score, int id_utilisateur, int id_subreddit) {
+
         this.titre = titre;
         this.contenu = contenu;
         this.date_creation = date_creation;
@@ -20,9 +20,22 @@ public class Post {
         this.id_utilisateur = id_utilisateur;
         this.id_subreddit = id_subreddit;
     }
-    public int getId_post(){
-        return id_post;
-    }
+
+
+
+
+
+
+        private String content;
+
+
+
+        public String getContent() {
+            return content;
+        }
+
+
+
     public String getTitre(){
         return titre;
     }

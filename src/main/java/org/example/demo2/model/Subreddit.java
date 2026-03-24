@@ -19,7 +19,7 @@ public class Subreddit {
   }
   public  String getNom(){
       return nom ;
-  }
+  }     
   public  String getDescription(){
       return description ;
   }
