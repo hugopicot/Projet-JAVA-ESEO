@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/jusci/IdeaProjects/Projet-JAVA-ESEO/src</OriginalElement>
+  <nodes>
+    <node x="1658.8999084737286" y="1968.1125408340467">org.example.demo2.HelloApplication</node>
+    <node x="2087.6537600074785" y="2550.291172664185">org.example.demo2.controller.PostCardController</node>
+    <node x="1909.4774574869957" y="4917.682811668137">org.example.demo2.dao.UtilisateurDao</node>
+    <node x="1903.6049700115204" y="4218.186309631208">org.example.demo2.dao.interfaces.IAbonnementDao</node>
+    <node x="1561.7494972336924" y="4750.523413100771">org.example.demo2.dao.interfaces.IVoteDao</node>
+    <node x="1915.9172848617118" y="3301.988752401538">org.example.demo2.service.interfaces.ISignalementService</node>
+    <node x="1699.4516839664336" y="2218.1711070544743">org.example.demo2.dao.SubredditDao</node>
+    <node x="1431.870819454861" y="3059.7823308202405">org.example.demo2.model.Message</node>
+    <node x="1699.037621944072" y="1617.7102141163814">org.example.demo2.Main</node>
+    <node x="710.0804904771446" y="3117.480396401787">org.example.demo2.util.SessionManager</node>
+    <node x="1972.2105776676126" y="1431.6423340378938">org.example.demo2.controller.FeedController</node>
+    <node x="1353.4631473085278" y="2256.815614905732">org.example.demo2.service.UtilisateurService</node>
+    <node x="1699.426154389222" y="2502.0095021427896">org.example.demo2.dao.interfaces.IMessageDao</node>
+    <node x="1439.2273677868725" y="3993.5257381908923">org.example.demo2.service.UtilisateurServiceTest</node>
+    <node x="1354.4284914232503" y="1743.9137342876825">org.example.demo2.util.PasswordUtils</node>
+    <node x="1078.0117571163432" y="4297.521675632513">org.example.demo2.controller.PostGeneratorController</node>
+    <node x="1506.4640973164796" y="4404.6380968399535">org.example.demo2.dao.AbonnementDao</node>
+    <node x="2356.7023152172314" y="3468.881120680476">org.example.demo2.service.CommentaireService</node>
+    <node x="518.6421461937454" y="-13.08637980436356">org.example.demo2.model.Post</node>
+    <node x="916.328673223863" y="2409.205526408733">org.example.demo2.dao.interfaces.IModerationDao</node>
+    <node x="1193.9030033925308" y="4892.466705444534">org.example.demo2.model.SignalementCommentaire</node>
+    <node x="694.6553414094783" y="4320.42148677849">org.example.demo2.dao.interfaces.IPostDao</node>
+    <node x="1090.1039450276512" y="1225.2429113274857">org.example.demo2.model.Vote</node>
+    <node x="842.5432200496504" y="4947.885988541353">org.example.demo2.dao.interfaces.ICommentaireDao</node>
+    <node x="1011.696821842396" y="5167.604388164046">org.example.demo2.dao.CommentaireDao</node>
+    <node x="1735.3636575529447" y="3051.3562171997373">org.example.demo2.service.AbonnementService</node>
+    <node x="1091.009505278519" y="3976.8201071270473">org.example.demo2.model.SignalementPost</node>
+    <node x="1001.6064520894315" y="4452.413718421658">org.example.demo2.controller.NavBarController</node>
+    <node x="393.8338533676284" y="5092.758973893893">org.example.demo2.controller.SubredditSidebarController</node>
+    <node x="652.7329160418344" y="4631.79978478376">org.example.demo2.dao.PostDao</node>
+    <node x="232.29809960318516" y="2152.069914805556">org.example.demo2.service.interfaces.ISubredditService</node>
+    <node x="1528.0535884684653" y="5022.335521949037">org.example.demo2.dao.VoteDao</node>
+    <node x="989.4350270342566" y="1753.0650593824835">org.example.demo2.service.PostServiceTest</node>
+    <node x="1477.0685761784948" y="3451.7375315040667">org.example.demo2.service.interfaces.IMessageService</node>
+    <node x="1433.1388732763435" y="1372.7190739067023">org.example.demo2.model.Abonnement</node>
+    <node x="585.2535742256144" y="2041.9373351813504">org.example.demo2.controller.ProfileController</node>
+    <node x="1052.7580964491594" y="951.9957821369884">org.example.demo2.dao.AbstractDao</node>
+    <node x="1215.1922455045" y="2535.861198063537">org.example.demo2.dao.ModerationDao</node>
+    <node x="1850.9151121215268" y="3561.9461057468275">org.example.demo2.controller.CreatePostController</node>
+    <node x="312.0805768928228" y="3310.8409429624085">org.example.demo2.service.interfaces.IAbonnementService</node>
+    <node x="724.8415451875302" y="2629.6885024796725">org.example.demo2.controller.TrendingController</node>
+    <node x="232.9067382565334" y="2731.6888200802105">org.example.demo2.dao.interfaces.ISignalementDao</node>
+    <node x="369.79472592731696" y="2917.14346034799">org.example.demo2.service.SignalementService</node>
+    <node x="1383.3259277470759" y="3740.553908263381">org.example.demo2.service.interfaces.ICommentaireService</node>
+    <node x="386.97396816414414" y="2500.5862488540283">org.example.demo2.controller.SidebarController</node>
+    <node x="639.0749916775292" y="594.0510508800206">org.example.demo2.HelloController</node>
+    <node x="1905.1182159109605" y="4579.133718180541">org.example.demo2.dao.interfaces.IUtilisateurDao</node>
+    <node x="250.3231950168336" y="4433.021027966052">org.example.demo2.service.CommentaireServiceTest</node>
+    <node x="1081.82842914241" y="2887.4854013731174">org.example.demo2.dao.SignalementDao</node>
+    <node x="1644.2454095828302" y="2773.1344876224584">org.example.demo2.dao.MessageDao</node>
+    <node x="1363.8287569439117" y="1928.9126020846138">org.example.demo2.dao.interfaces.ISubredditDao</node>
+    <node x="296.95495429679255" y="1744.7209880091818">org.example.demo2.service.MessageService</node>
+    <node x="1052.3092603900016" y="3705.9076400717167">org.example.demo2.model.Moderation</node>
+    <node x="297.41845769241223" y="1292.7950401587698">org.example.demo2.service.interfaces.IPostService</node>
+    <node x="682.8073604749869" y="3569.4121627491904">org.example.demo2.controller.PostDetailController</node>
+    <node x="417.15501978067346" y="4231.973895044475">org.example.demo2.controller.AccueilController</node>
+    <node x="1107.1174114098496" y="3300.835451266217">org.example.demo2.model.Subreddit</node>
+    <node x="331.43715457737073" y="3761.650793780443">org.example.demo2.model.Utilisateur</node>
+    <node x="318.0032460964648" y="3530.445919594558">org.example.demo2.service.SubredditService</node>
+    <node x="-24.0664918052764" y="1278.4540382430437">org.example.demo2.model.Commentaire</node>
+    <node x="755.0311206954973" y="3445.348440853575">org.example.demo2.util.DatabaseConnection</node>
+    <node x="-129.45991784282364" y="2920.051567956613">org.example.demo2.service.PostService</node>
+    <node x="-106.26823332669052" y="2407.51999685821">org.example.demo2.service.interfaces.IUtilisateurService</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.example.demo2.dao.ModerationDao" target="org.example.demo2.dao.interfaces.IModerationDao" relationship="REALIZATION">
+      <point x="-184.0" y="-84.0" />
+      <point x="105.0" y="54.65567165480434" />
+    </edge>
+    <edge source="org.example.demo2.dao.PostDao" target="org.example.demo2.dao.interfaces.IPostDao" relationship="REALIZATION">
+      <point x="24.922425367643882" y="-127.5" />
+      <point x="0.0" y="115.5" />
+    </edge>
+    <edge source="org.example.demo2.dao.SignalementDao" target="org.example.demo2.dao.interfaces.ISignalementDao" relationship="REALIZATION">
+      <point x="-99.63618363790988" y="-55.5" />
+      <point x="1197.6922455045" y="2612.1885024796725" />
+      <point x="448.4067382565334" y="2612.1885024796725" />
+      <point x="0.0" y="-55.5" />
+    </edge>
+    <edge source="org.example.demo2.dao.VoteDao" target="org.example.demo2.dao.interfaces.IVoteDao" relationship="REALIZATION">
+      <point x="18.69590876522716" y="-103.5" />
+      <point x="0.0" y="91.5" />
+    </edge>
+    <edge source="org.example.demo2.dao.UtilisateurDao" target="org.example.demo2.dao.interfaces.IUtilisateurDao" relationship="REALIZATION">
+      <point x="-4.359241576035174" y="-127.5" />
+      <point x="0.0" y="115.5" />
+    </edge>
+    <edge source="org.example.demo2.dao.SubredditDao" target="org.example.demo2.dao.interfaces.ISubredditDao" relationship="REALIZATION">
+      <point x="-173.0" y="-70.35549214874231" />
+      <point x="1463.3287569439117" y="2239.315614905732" />
+      <point x="0.0" y="79.5" />
+    </edge>
+    <edge source="org.example.demo2.dao.MessageDao" target="org.example.demo2.dao.interfaces.IMessageDao" relationship="REALIZATION">
+      <point x="29.180744806391658" y="-103.5" />
+      <point x="0.0" y="91.5" />
+    </edge>
+    <edge source="org.example.demo2.dao.CommentaireDao" target="org.example.demo2.dao.interfaces.ICommentaireDao" relationship="REALIZATION">
+      <point x="-187.5" y="-79.5" />
+      <point x="42.65360179274569" y="67.5" />
+    </edge>
+    <edge source="org.example.demo2.dao.AbonnementDao" target="org.example.demo2.dao.interfaces.IAbonnementDao" relationship="REALIZATION">
+      <point x="168.0" y="0.0" />
+      <point x="2071.6049700115204" y="4472.1380968399535" />
+      <point x="0.0" y="67.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="0.47134245562390287" showDependencies="false" x="1387.5648091744993" y="929.0510549100181" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

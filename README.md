@@ -226,3 +226,21 @@ La documentation sera générée dans `target/site/apidocs/`.
 3. Cliquez sur `OK`
 
 La documentation sera générée dans le dossier `docs/`.
+
+## Diagramme UML
+
+Le diagramme de classes UML du projet est disponible dans le fichier :
+
+- `src/uml.uml`
+
+### Comment générer le diagramme UML avec IntelliJ IDEA
+
+1. Dans la fenêtre du projet, faites un clic droit sur le dossier `src`
+2. Sélectionnez `Java Classes` → `Diagram`
+3. Une fenêtre affiche toutes les classes avec leurs propriétés, méthodes et relations
+4. Pour exporter :
+   - Clic droit dans le diagramme
+   - Sélectionnez `Export to Image` ou `Save as`
+5. Enregistrez le fichier dans le dossier souhaité
+
+Le fichier `src/uml.uml` contient le diagramme généré automatiquement par IntelliJ IDEA.
