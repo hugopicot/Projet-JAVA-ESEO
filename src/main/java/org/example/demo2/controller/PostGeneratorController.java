@@ -32,7 +32,7 @@ public class PostGeneratorController {
         int userId = post.getId_utilisateur();
         Label userLabel = new Label("User " + userId);
         Button goToPostButton = new Button("hola");
-        goToPostButton.setOnAction(_ -> {
+        goToPostButton.setOnAction(e -> {
 //            TODO: how can I give to this button the main and accueil to remove them? HelloApplication lines 56-63
         });
         userBox.getChildren().addAll(userImageBox, userLabel, goToPostButton);

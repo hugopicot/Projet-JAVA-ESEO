@@ -34,7 +34,7 @@ public class UtilisateurDao {
     }
     public Utilisateur findByid(int id){
         Utilisateur utilisateur = null;
-        String sql = "SELECT * FROM Utulisateur WHERE id_utilisateur = ?";
+        String sql = "SELECT * FROM utilisateur WHERE id_utilisateur = ?";
         try (
                 Connection conn = getConnection();
                 PreparedStatement  ps = conn.prepareStatement(sql)) {
@@ -56,49 +56,47 @@ public class UtilisateurDao {
 
     }
     public void add(Utilisateur utulisateur) {
-        String sql = "INSERT INTO utulisateur (id_utilisateur,pseudo,email,mot_de_passe,date_inscription,karma) VALUES (?, ?, ?,?,?,?)";
+        String sql = "INSERT INTO utilisateur (pseudo, email, mot_de_passe, date_inscription, karma) VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)";
 
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            ps.setInt(1, utulisateur.getId());
-            ps.setString(2, utulisateur.getPseudo());
-            ps.setString(3, utulisateur.getEmail());
+            ps.setString(1, utulisateur.getPseudo());
+            ps.setString(2, utulisateur.getEmail());
             ps.setString(3, utulisateur.getMotDePasse());
-            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDateInscription().toLocalDateTime()));
-            ps.setInt(3, utulisateur.getKarma());
-
-
-
-
+            ps.setInt(4, utulisateur.getKarma());
 
             ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                utulisateur.setId(rs.getInt(1));
+            }
 
         } catch (SQLException  e) {
             e.printStackTrace();
-
         }
     }
-    public void update(Utilisateur utulisateur) throws SQLException {
-        String sql = "UPDATE utulisateur  SET id_utilisateur = ?,pseudo = ?,email = ?,mot_de_passe = ?,date_inscription = ?,karma = ?  where id_utilisateur = ?";
-        try ( Connection conn = getConnection();
-              PreparedStatement ps = conn.prepareStatement(sql)){
 
-            ps.setInt(1, utulisateur.getId());
-            ps.setString(2, utulisateur.getPseudo());
-            ps.setString(3, utulisateur.getEmail());
+    public void update(Utilisateur utulisateur) throws SQLException {
+        String sql = "UPDATE utilisateur SET pseudo = ?, email = ?, mot_de_passe = ?, karma = ? WHERE id_utilisateur = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, utulisateur.getPseudo());
+            ps.setString(2, utulisateur.getEmail());
             ps.setString(3, utulisateur.getMotDePasse());
-            ps.setTimestamp(4, Timestamp.valueOf(utulisateur.getDateInscription().toLocalDateTime()));
-            ps.setInt(3, utulisateur.getKarma());
+            ps.setInt(4, utulisateur.getKarma());
+            ps.setInt(5, utulisateur.getId());
 
             ps.executeUpdate();
         }
-        catch (SQLException e){
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
     public void delete(int id){
-        String sql = "DELETE FROM Utulisateur  WHERE id_utilisateur = ?";
+        String sql = "DELETE FROM utilisateur WHERE id_utilisateur = ?";
         try (
                 Connection conn = getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql)

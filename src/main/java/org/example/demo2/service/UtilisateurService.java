@@ -14,7 +14,6 @@ public class UtilisateurService {
     // INSCRIPTION
     public boolean inscrire(String pseudo, String email, String motDePasse) {
 
-        // Vérifier si email déjà utilisé
         if (utilisateurDAO.getUtilisateurByEmail(email) != null) {
             return false;
         }
@@ -22,7 +21,7 @@ public class UtilisateurService {
         String hashedPassword = PasswordUtils.hashPassword(motDePasse);
 
         Utilisateur utilisateur = new Utilisateur(
-                1,
+                0,
                 pseudo,
                 email,
                 hashedPassword,
@@ -63,5 +62,10 @@ public class UtilisateurService {
     // Récupérer utilisateur connecté
     public Utilisateur getUtilisateurConnecte() {
         return utilisateurConnecte;
+    }
+
+    // Récupérer utilisateur par ID
+    public Utilisateur getUtilisateurParId(int id) {
+        return utilisateurDAO.findByid(id);
     }
 }

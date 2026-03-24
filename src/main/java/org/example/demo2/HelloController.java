@@ -9,21 +9,24 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.example.demo2.controller.NavBarController;
 import org.example.demo2.model.Commentaire;
 import org.example.demo2.model.Post;
 import org.example.demo2.model.Subreddit;
+import org.example.demo2.model.Utilisateur;
 import org.example.demo2.service.AbonnementService;
 import org.example.demo2.service.CommentaireService;
 import org.example.demo2.service.PostService;
 import org.example.demo2.service.SignalementService;
 import org.example.demo2.service.SubredditService;
+import org.example.demo2.service.UtilisateurService;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class HelloController implements Initializable {
+public class HelloController implements Initializable, NavBarController.LoginCallback {
 
     // ===== Éléments FXML liés au formulaire de création =====
     @FXML
@@ -54,18 +57,24 @@ public class HelloController implements Initializable {
     @FXML
     private VBox postsContainer;
 
+    // ===== NavBar container =====
+    @FXML
+    private HBox navbarContainer;
+
     // ===== Service métier =====
     private final PostService postService = new PostService();
     private final CommentaireService commentaireService = new CommentaireService();
     private final SubredditService subredditService = new SubredditService();
     private final SignalementService signalementService = new SignalementService();
     private final AbonnementService abonnementService = new AbonnementService();
+    private final UtilisateurService utilisateurService = new UtilisateurService();
+
+    private final NavBarController navbarController = new NavBarController();
 
     // Filtre actuel (null = tous les posts)
     private Subreddit subredditActuel = null;
 
-    // ===== ID de l'utilisateur connecté =====
-    // TODO: À remplacer par l'utilisateur réellement connecté (voir avec Siloe)
+    // ===== ID de l'utilisateur connecté (obtenu depuis le service) =====
     private int utilisateurConnecteId = 1;
 
     // Formateur de date pour l'affichage
@@ -76,10 +85,47 @@ public class HelloController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        if (navbarContainer != null) {
+            String logoPath = getClass().getResource("img/nova_logo_new.png").toExternalForm();
+            HBox navbar = navbarController.generateNavbar(logoPath, utilisateurService, this);
+            navbarContainer.getChildren().add(navbar);
+        }
         chargerSubreddits();
         chargerPosts();
         chargerTrendingPosts();
         gererHighlightSidebar(allFeedBox);
+    }
+
+    @Override
+    public void onLoginSuccess(Utilisateur user) {
+        utilisateurConnecteId = user.getId();
+        chargerPosts();
+        System.out.println("Bienvenue " + user.getPseudo() + " (ID: " + user.getId() + ")");
+    }
+
+    @Override
+    public void onLogout() {
+        utilisateurConnecteId = 1;
+        chargerPosts();
+        System.out.println("Déconnexion réussie");
+    }
+
+    @Override
+    public void onRegisterSuccess(Utilisateur user) {
+        utilisateurConnecteId = user.getId();
+        chargerPosts();
+        System.out.println("Compte cree! Bienvenue " + user.getPseudo() + " (ID: " + user.getId() + ")");
+    }
+
+    private String getNomUtilisateur(int idUtilisateur) {
+        if (idUtilisateur == utilisateurConnecteId && utilisateurService.estAuthentifie()) {
+            return utilisateurService.getUtilisateurConnecte().getPseudo();
+        }
+        Utilisateur user = utilisateurService.getUtilisateurParId(idUtilisateur);
+        if (user != null) {
+            return user.getPseudo();
+        }
+        return "Utilisateur #" + idUtilisateur;
     }
 
     private void chargerSubreddits() {
@@ -162,7 +208,7 @@ public class HelloController implements Initializable {
                     userIcon.setPreserveRatio(true);
                     header.getChildren().add(userIcon);
                 } catch (Exception e) {}
-                Label userLabel = new Label("Utilisateur #" + post.getId_utilisateur());
+                Label userLabel = new Label(getNomUtilisateur(post.getId_utilisateur()));
                 userLabel.setStyle("-fx-font-size: 10; -fx-text-fill: #555;");
                 header.getChildren().add(userLabel);
                 
@@ -275,6 +321,13 @@ public class HelloController implements Initializable {
      */
     @FXML
     private void handleCreatePost() {
+        if (!utilisateurService.estAuthentifie()) {
+            navbarController.showLoginDialogWithCallback(() -> {
+                handleCreatePost();
+            });
+            return;
+        }
+        
         String titre = postTitleField.getText();
         String contenu = postContentArea.getText();
         
@@ -333,9 +386,17 @@ public class HelloController implements Initializable {
             joinBtn.getStyleClass().add(estAb ? "make-post-button-white" : "make-post-button");
             
             joinBtn.setOnAction(e -> {
-                abonnementService.toggleAbonnement(utilisateurConnecteId, subredditActuel.getId_subreddit());
-                chargerSubreddits(); // Rafraîchir sidebar
-                chargerPosts(); // Rafraîchir le bouton
+                if (!utilisateurService.estAuthentifie()) {
+                    navbarController.showLoginDialogWithCallback(() -> {
+                        abonnementService.toggleAbonnement(utilisateurConnecteId, subredditActuel.getId_subreddit());
+                        chargerSubreddits();
+                        chargerPosts();
+                    });
+                } else {
+                    abonnementService.toggleAbonnement(utilisateurConnecteId, subredditActuel.getId_subreddit());
+                    chargerSubreddits();
+                    chargerPosts();
+                }
             });
             
             header.getChildren().addAll(title, joinBtn);
@@ -376,7 +437,7 @@ public class HelloController implements Initializable {
         } catch (Exception e) {
             // Si l'image n'est pas trouvée, on continue sans
         }
-        Label userLabel = new Label("Utilisateur #" + post.getId_utilisateur());
+        Label userLabel = new Label(getNomUtilisateur(post.getId_utilisateur()));
         userRow.getChildren().add(userLabel);
 
         // --- Date ---
@@ -401,15 +462,17 @@ public class HelloController implements Initializable {
         
         // Appliquer un style différent si déjà liké
         if (dejaLike) {
-            likeBtn.getStyleClass().add("make-post-button"); // On garde le même style mais on pourrait en mettre un "active"
-            likeBtn.setOpacity(0.7); // Simple feedback visuel
+            likeBtn.getStyleClass().add("make-post-button");
+            likeBtn.setOpacity(0.7);
         } else {
             likeBtn.getStyleClass().add("make-post-button-white");
         }
+        likeBtn.setStyle(likeBtn.getStyle() + "-fx-text-fill: black;");
 
         try {
-            String iconPath = dejaLike ? "img/like_white.png" : "img/like_white.png"; // On reste sur white si on n'a pas encore l'autre image
+            String iconPath = dejaLike ? "img/like_white.png" : "img/like_svg.png";
             ImageView likeIcon = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
+            likeIcon.setFitWidth(16);
             likeIcon.setPreserveRatio(true);
             likeIcon.setPickOnBounds(true);
             likeBtn.setGraphic(likeIcon);
@@ -418,15 +481,24 @@ public class HelloController implements Initializable {
         }
         
         likeBtn.setOnAction(event -> {
-            postService.toggleLike(post.getId_post(), utilisateurConnecteId);
-            chargerPosts();
-            chargerTrendingPosts();
+            if (!utilisateurService.estAuthentifie()) {
+                navbarController.showLoginDialogWithCallback(() -> {
+                    postService.toggleLike(post.getId_post(), utilisateurService.getUtilisateurConnecte().getId());
+                    chargerPosts();
+                    chargerTrendingPosts();
+                });
+            } else {
+                postService.toggleLike(post.getId_post(), utilisateurConnecteId);
+                chargerPosts();
+                chargerTrendingPosts();
+            }
         });
 
         // Bouton Commentaire
         int nbCom = commentaireService.getNombreCommentaires(post.getId_post());
         Button commentBtn = new Button(String.valueOf(nbCom));
         commentBtn.getStyleClass().add("make-post-button-white");
+        commentBtn.setStyle("-fx-text-fill: black;");
         try {
             ImageView commentIcon = new ImageView(new Image(getClass().getResourceAsStream("img/comment_svg.png")));
             commentIcon.setPreserveRatio(true);
@@ -449,14 +521,42 @@ public class HelloController implements Initializable {
         replyField.setPrefWidth(300);
         Button replySubmit = new Button("Répondre");
         replySubmit.getStyleClass().add("make-post-button");
-        
+        replySubmit.setStyle("-fx-text-fill: black;");
+
         replySubmit.setOnAction(e -> {
             String txt = replyField.getText();
-            if (txt != null && !txt.trim().isEmpty()) {
-                commentaireService.ajouterCommentaire(txt, utilisateurConnecteId, post.getId_post(), null);
-                replyField.clear();
-                chargerPosts(); // On recharge pour voir le nouveau commentaire
+            if (txt == null || txt.trim().isEmpty()) {
+                return;
             }
+            
+            if (!utilisateurService.estAuthentifie()) {
+                navbarController.showLoginDialogWithCallback(() -> {
+                    replyField.setText(txt);
+                    replySubmit.fire();
+                });
+                return;
+            }
+            
+            commentaireService.ajouterCommentaire(txt, utilisateurConnecteId, post.getId_post(), null);
+            replyField.clear();
+            
+            VBox comBox = new VBox(2);
+            HBox comHeader = new HBox(10);
+            String userName = utilisateurService.getUtilisateurConnecte().getPseudo();
+            Label comUser = new Label(userName);
+            comUser.setStyle("-fx-font-weight: bold; -fx-font-size: 10;");
+
+            comHeader.getChildren().add(comUser);
+            
+            Label comTxt = new Label(txt);
+            comTxt.setWrapText(true);
+            comBox.getChildren().addAll(comHeader, comTxt);
+            comBox.setStyle("-fx-background-color: #f8f9fa; -fx-padding: 5; -fx-background-radius: 5;");
+            
+            commentsSection.getChildren().add(comBox);
+            int currentCount = Integer.parseInt(commentBtn.getText()) + 1;
+            commentBtn.setText(String.valueOf(currentCount));
+            chargerTrendingPosts();
         });
         
         replyBox.getChildren().addAll(replyField, replySubmit);
@@ -467,12 +567,12 @@ public class HelloController implements Initializable {
         for (Commentaire com : coms) {
             VBox comBox = new VBox(2);
             HBox comHeader = new HBox(10);
-            Label comUser = new Label("Utilisateur #" + com.getId_utilisateur());
+            Label comUser = new Label(getNomUtilisateur(com.getId_utilisateur()));
             comUser.setStyle("-fx-font-weight: bold; -fx-font-size: 10;");
             
             Button sigComBtn = new Button("Signaler");
             sigComBtn.setStyle("-fx-font-size: 8; -fx-background-color: transparent; -fx-text-fill: #888; -fx-cursor: hand;");
-            sigComBtn.setOnAction(e -> {
+            sigComBtn.setOnAction(ev -> {
                 signalementService.signalerCommentaire(utilisateurConnecteId, com.getId_commentaire());
                 sigComBtn.setText("Signalé");
                 sigComBtn.setDisable(true);
@@ -505,13 +605,22 @@ public class HelloController implements Initializable {
 
         buttonsRow.getChildren().addAll(likeBtn, commentBtn, reportBtn);
 
-        // Bouton Supprimer (visible seulement pour l'auteur)
-        if (post.getId_utilisateur() == utilisateurConnecteId) {
+        // Bouton Supprimer (visible seulement pour l'auteur connecté)
+        if (utilisateurService.estAuthentifie() && post.getId_utilisateur() == utilisateurConnecteId) {
             Button deleteBtn = new Button("Supprimer");
             deleteBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-background-radius: 5;");
             deleteBtn.setOnAction(event -> {
-                postService.supprimerPost(post.getId_post(), utilisateurConnecteId);
-                chargerPosts();
+                Alert confirmDialog = new Alert(Alert.AlertType.CONFIRMATION);
+                confirmDialog.setTitle("Confirmation");
+                confirmDialog.setHeaderText("Voulez-vous vraiment supprimer ce post ?");
+                confirmDialog.setContentText("Cette action est irreversible.");
+
+                confirmDialog.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.OK) {
+                        postService.supprimerPost(post.getId_post(), utilisateurConnecteId);
+                        chargerPosts();
+                    }
+                });
             });
             buttonsRow.getChildren().add(deleteBtn);
         }
