@@ -16,13 +16,6 @@ import java.util.List;
 
 
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import org.example.demo2.model.Post;
-import org.example.demo2.service.PostService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -76,7 +69,6 @@ public class AccueilController {
 
 
                 postService.createPost(newPost);
-
 
                 List<Post> updatedPosts = postService.getAllPosts();
                 VBox newPostsBox = controller.generateAllPosts(updatedPosts);
