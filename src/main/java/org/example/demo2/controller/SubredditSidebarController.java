@@ -1,7 +1,13 @@
 package org.example.demo2.controller;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.example.demo2.model.Subreddit;
@@ -10,6 +16,7 @@ import org.example.demo2.service.SubredditService;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.Optional;
 
 
 public class SubredditSidebarController {
@@ -60,6 +67,11 @@ public class SubredditSidebarController {
         if (subredditsContainer == null) return;
         
         subredditsContainer.getChildren().clear();
+
+        Button createSubBtn = new Button("+ Create Community");
+        createSubBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 12;");
+        createSubBtn.setOnAction(e -> showCreateSubredditDialog());
+        subredditsContainer.getChildren().add(createSubBtn);
 
         List<Subreddit> allSubs = subredditService.getSubreddits();
         
@@ -131,5 +143,53 @@ public class SubredditSidebarController {
         } else if (active instanceof Button) {
             ((Button) active).setStyle("-fx-background-color: #3498db; -fx-background-radius: 5; -fx-text-fill: white; -fx-cursor: hand;");
         }
+    }
+
+    private void showCreateSubredditDialog() {
+        Dialog<Subreddit> dialog = new Dialog<>();
+        dialog.setTitle("Create Community");
+        dialog.setHeaderText("Create a new community");
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField nameField = new TextField();
+        nameField.setPromptText("Community name (r/)");
+        TextField descField = new TextField();
+        descField.setPromptText("Description");
+
+        grid.add(new Label("Name:"), 0, 0);
+        grid.add(nameField, 1, 0);
+        grid.add(new Label("Description:"), 0, 1);
+        grid.add(descField, 1, 1);
+
+        ButtonType createButtonType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(createButtonType, ButtonType.CANCEL);
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == createButtonType) {
+                String name = nameField.getText();
+                String desc = descField.getText();
+                if (name != null && !name.trim().isEmpty()) {
+                    try {
+                        return subredditService.creerSubreddit(name.trim(), desc != null ? desc.trim() : "");
+                    } catch (Exception ex) {
+                        return null;
+                    }
+                }
+            }
+            return null;
+        });
+
+        Optional<Subreddit> result = dialog.showAndWait();
+        result.ifPresent(subreddit -> {
+            chargerSubreddits();
+            if (onSubredditSelected != null) {
+                onSubredditSelected.accept(subreddit);
+            }
+        });
     }
 }

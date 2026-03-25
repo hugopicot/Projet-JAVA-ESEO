@@ -81,7 +81,7 @@ Tests pour la gestion des posts.
 
 - **testGetPostsParUtilisateur** : Recupere tous les posts d'un utilisateur. Resultat attendu : tous les posts de l'utilisateur sont retournes.
 
-- **testToggleLike** : Teste le systeme de likes. Ajoute un like puis le retire. Verifie que le score augmente puis revient a la valeur initiale. Resultat预期 : le score change correctement.
+- **testToggleLike** : Teste le systeme de likes. Ajoute un like puis le retire. Verifie que le score augmente puis revient a la valeur initiale. Resultat attendu : le score change correctement.
 
 - **testADejALike** : Verifie si un utilisateur a deja liké un post. Resultat attendu : retourne vrai apres avoir liké, faux avant.
 
