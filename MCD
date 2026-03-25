@@ -1,0 +1,61 @@
+UTILISATEUR: _id_utilisateur, pseudo, email, mot_de_passe, date_inscription, karma  
+ 
+SUBREDDIT: _id_subreddit, nom, description, date_creation  
+ 
+POST: _id_post, titre, contenu, date_creation, score  
+ 
+COMMENTAIRE: _id_commentaire, contenu, date_creation, score  
+ 
+MESSAGE: _id_message, contenu, date_envoi, lu  
+ 
+VOTE: _id_vote, type_vote, date_vote  
+ 
+SIGNALEMENT_POST: _id_signalement  
+ 
+SIGNALEMENT_COMMENTAIRE: _id_signalement_com  
+ 
+MODERATION: _id_moderation  
+ 
+---
+ 
+CREER, 11 UTILISATEUR, 0N POST  
+ 
+PUBLIER, 11 POST, 1N SUBREDDIT  
+ 
+COMMENTER, 11 UTILISATEUR, 0N COMMENTAIRE  
+ 
+LIER_POST, 11 COMMENTAIRE, 0N POST  
+ 
+REPONDRE, 0N [parent] COMMENTAIRE, 0N [enfant] COMMENTAIRE  
+ 
+---
+ 
+ENVOYER, 11 UTILISATEUR, 0N MESSAGE  
+ 
+RECEVOIR, 11 UTILISATEUR, 0N MESSAGE  
+ 
+---
+ 
+FAIRE_VOTE, 11 UTILISATEUR, 0N VOTE  
+ 
+VOTE_POST, 11 POST, 0N VOTE  
+ 
+VOTE_COMMENTAIRE, 11 COMMENTAIRE, 0N VOTE  
+ 
+---
+ 
+SIGNALER_POST, 11 UTILISATEUR, 0N SIGNALEMENT_POST  
+ 
+CIBLE_POST, 11 POST, 0N SIGNALEMENT_POST  
+ 
+---
+ 
+SIGNALER_COMMENTAIRE, 11 UTILISATEUR, 0N SIGNALEMENT_COMMENTAIRE  
+ 
+CIBLE_COMMENTAIRE, 11 COMMENTAIRE, 0N SIGNALEMENT_COMMENTAIRE  
+ 
+---
+ 
+MODERER, 11 UTILISATEUR, 0N MODERATION  
+ 
+GERER_SUB, 11 SUBREDDIT, 0N MODERATION  
